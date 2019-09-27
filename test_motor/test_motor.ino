@@ -9,13 +9,13 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
  */
 
 /* Define the Motors pin numbers */
-#define mL_en 4
-#define mR_en 13
+#define mL_en 2
+#define mR_en 11
 // Motors directions
-#define mL_a 2
-#define mL_b 3
-#define mR_a 12
-#define mR_b 11
+#define mL_a 3
+#define mL_b 4
+#define mR_a 13
+#define mR_b 12
 
 
 void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 2 motors & manage directions
