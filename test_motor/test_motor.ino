@@ -17,6 +17,12 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
 #define mR_a 13
 #define mR_b 12
 
+// Define robot distances
+#define r 3.15 // Radio de la rueda
+#define k 6.425 //Distancia del centro a la rueda
+
+// Global variables
+float w[2]; // Wheele velocities {left, right}
 
 void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 2 motors & manage directions
 
@@ -37,12 +43,18 @@ void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 
     }
 }
 
-void move_right(int pwm){
-  write_pwm(mR_en,pwm, mR_a,mR_b);
+void move_right(){
+  write_pwm(mR_en,w[1], mR_a,mR_b);
 }
 
-void move_left(int pwm){
-  write_pwm(mL_en, pwm, mL_a, mR_b);
+void move_left(){
+  write_pwm(mL_en, w[0], mL_a, mR_b);
+}
+
+void vel(float lin, float ang){
+ float acoplamiento = ang / lin;
+ w[0]=(lin*(1-k*acoplamiento))/r;
+ w[1]=(lin*(1+k*acoplamiento))/r;  
 }
 
 void setup() {
@@ -54,7 +66,22 @@ void setup() {
 }
 
 void loop() {
-  move_left(255);
-  move_right(255);
-
+  vel(1000,0);  //palante
+  move_left();
+  move_right();
+  delay(2000);
+  vel(0,1000); //izq
+  move_left();
+  move_right();
+  delay(2000);
+  vel(0,-1000);  //dch
+  move_left();
+  move_right();
+  delay(2000);
+  vel(-1000,0); //atras
+  move_left();
+  move_right();
+  delay(2000);
+  
+  
 }
