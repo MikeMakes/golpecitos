@@ -90,14 +90,14 @@ void loop() {
 // e. Girar Izquierda (hacia adelante y atrás)
   vel(v_max,-v_crucero);
   move();
-  delay(2000);
+  delay(1000);
   vel(-v_max,-v_crucero);
   move();
   delay(2000);  
 // f. Girar Derecha (hacia adelante y atrás)
   vel(v_max,v_crucero);
   move();
-  delay(2000);
+  delay(1000);
   vel(v_max,v_crucero);
   move();
   delay(2000);  
