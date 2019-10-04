@@ -20,6 +20,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
 // Define robot distances
 #define r 3.15 // Radio de la rueda
 #define k 6.425 //Distancia del centro a la rueda
+#define v_max=803.25 //Velocidad maxima a la que puede ir para una velocidad puramente lineal de 8 bits (255)
 
 // Global variables
 float w[2]; // Wheels velocities {left, right}
@@ -61,15 +62,43 @@ void setup() {
   pinMode(mL_en, OUTPUT); pinMode(mR_en, OUTPUT);
 
 }
-
+// 1. Montar y programar el robot para realizar los movimientos básicos de una configuración
+// diferencial:
+// a. Avanzar en línea recta
+// b. Retroceder
+// c. Rotar en sentido horario
+// d. Rotar en sentido antihorario
+// e. Girar Izquierda (hacia adelante y atrás)
+// f. Girar Derecha (hacia adelante y atrás)
 void loop() {
-  vel(1000,0);  // un pasito palante
+//a. Avanzar en línea recta
+  vel(v_max,0);  // un pasito palante
   move();
   delay(2000);
-  vel(-1000,0); // un pasito pa tras
+// b. Retroceder
+  vel(-v_max,0); // un pasito pa tras
   move();
   delay(2000);
-  vel(0,-1000);
-  delay(2000); /dch o izq 
-  
+// c. Rotar en sentido horario
+  vel(0,-v_max);
+  move();
+  delay(2000); 
+// d. Rotar en sentido antihorario
+  vel(0,v_max);
+  move();
+  delay(2000); 
+// e. Girar Izquierda (hacia adelante y atrás)
+  vel(v_max,v_max);
+  move();
+  delay(2000);
+  vel(-v_max,-v_max);
+  move();
+  delay(2000);  
+// f. Girar Derecha (hacia adelante y atrás)
+  vel(v_max,-v_max);
+  move();
+  delay(2000);
+  vel(-v_max,v_max);
+  move();
+  delay(2000);  
 }
