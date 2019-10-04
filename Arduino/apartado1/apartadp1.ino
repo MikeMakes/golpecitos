@@ -44,7 +44,7 @@ void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 
     }
 }
 
-void move(){  // escribe la velocidad w, generalmente calculada
+void move(){  // escribe la velocidad w, generalmente calculada.
   write_pwm(mR_en,w[1], mR_a,mR_b);
   write_pwm(mL_en, w[0], mL_a, mL_b);
 }
