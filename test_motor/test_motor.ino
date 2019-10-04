@@ -22,7 +22,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
 #define k 6.425 //Distancia del centro a la rueda
 
 // Global variables
-float w[2]; // Wheele velocities {left, right}
+float w[2]; // Wheels velocities {left, right}
 
 void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 2 motors & manage directions
 
@@ -43,15 +43,12 @@ void write_pwm(int enable,int pwm, int dir1, int dir2){ //function to write pwm 
     }
 }
 
-void move_right(){
+void move(){  // escribe la velocidad w, generalmente calculada
   write_pwm(mR_en,w[1], mR_a,mR_b);
+  write_pwm(mL_en, w[0], mL_a, mL_b);
 }
 
-void move_left(){
-  write_pwm(mL_en, w[0], mL_a, mR_b);
-}
-
-void vel(float lin, float ang){
+void vel(float lin, float ang){ //modelo cinematico
  float acoplamiento = ang / lin;
  w[0]=(lin*(1-k*acoplamiento))/r;
  w[1]=(lin*(1+k*acoplamiento))/r;  
@@ -66,22 +63,13 @@ void setup() {
 }
 
 void loop() {
-  vel(1000,0);  //palante
-  move_left();
-  move_right();
+  vel(1000,0);  // un pasito palante
+  move();
   delay(2000);
-  vel(0,1000); //izq
-  move_left();
-  move_right();
+  vel(-1000,0); // un pasito pa tras
+  move();
   delay(2000);
-  vel(0,-1000);  //dch
-  move_left();
-  move_right();
-  delay(2000);
-  vel(-1000,0); //atras
-  move_left();
-  move_right();
-  delay(2000);
-  
+  vel(0,-1000);
+  delay(2000); /dch o izq 
   
 }
