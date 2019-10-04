@@ -1,3 +1,6 @@
+
+#include "Golpecitos.h"
+
 /*
 ENABLE(PWM) |      A       |     B        |   STATUS           |
 --------------------------------------------------------- |
@@ -54,11 +57,17 @@ void vel(float lin, float ang){ //modelo cinematico
  w[1]=(lin*(1+k*acoplamiento))/r;  
 }
 
+
 void setup() {
     /* Motors pin init */
   pinMode(mL_a, OUTPUT);   pinMode(mL_b, OUTPUT);
   pinMode(mR_a, OUTPUT);   pinMode(mR_b, OUTPUT);
   pinMode(mL_en, OUTPUT); pinMode(mR_en, OUTPUT);
+
+  Golpecitos golpes;
+  golpes.saluda();
+
+
 
 }
 
