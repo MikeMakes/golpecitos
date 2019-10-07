@@ -46,3 +46,4 @@ void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_i
 
 
 //  ----------- Metodos(funciones) privados -----------
+//YA esta
