@@ -171,7 +171,7 @@ void Golpecitos::step(){
   return;
 }
 
-
+//----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
 
   // Feed PIDs
@@ -180,11 +180,23 @@ void Golpecitos::stepControl(){
 
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
-  float distanciaMedia = (mDistSonar[0]+mDistSonar[1])/2;
+  float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
   float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
   move(outPID,0.0);
 
   mLastTime = millis();
+}
+
+//----------------------------------------------------------------------------------
+void Golpecitos::writeTelemetry(){
+  // Definir string para mandar Aqui
+  // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  
+  Serial1.print(log);
+
+  return;
 }

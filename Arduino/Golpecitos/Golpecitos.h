@@ -31,6 +31,7 @@ class Golpecitos{
     char readBluetooth();
     void step();
     void stepControl();
+    void writeTelemetry();
 
   public:
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
