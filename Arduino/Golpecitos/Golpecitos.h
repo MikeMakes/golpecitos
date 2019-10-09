@@ -32,10 +32,12 @@ class Golpecitos{
       Golpecitos();
       ~Golpecitos();
       float mSpeed[2]; // Velocidad de las ruedas: 0-izq y 1-dch
+
+      
     // Public functions (Puede acceder cualquiera)
     public:
 		  void saluda();
-      float* cinematica(float lin, float ang) ;
+      void cinematica(float lin, float ang) ;
       void move(float _lin, float _ang);
       void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 

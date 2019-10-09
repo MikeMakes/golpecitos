@@ -15,7 +15,7 @@ void Golpecitos::saluda(){
 	return ;
 }
 
-
+//----------------------------------------------------------------------------------
 void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //function to write _pwm 2 motors & manage directions
     if(_pwm > 0){
       if (_pwm>255) _pwm=255;
@@ -32,12 +32,16 @@ void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //functi
     }
 }
 
-float* Golpecitos::cinematica(float _lin, float _ang){
+
+//----------------------------------------------------------------------------------
+void Golpecitos::cinematica(float _lin, float _ang){
 	mSpeed[0]=(_lin-eje*_ang)/r;
 	mSpeed[1]=(_lin+eje*_ang)/r;
-	return mSpeed;
+  
+	return;
 }
 
+//----------------------------------------------------------------------------------
 void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_izq _vel[1]=velocidad_rueda_dch
 	cinematica(_lin,_ang);
 	write_pwm(mL_en, mSpeed[0], mL_a, mL_b);
