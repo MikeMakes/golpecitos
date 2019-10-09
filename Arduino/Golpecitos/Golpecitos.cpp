@@ -10,6 +10,7 @@ Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pin
 
   mPinEchoIzq = _pinEchoIzq;
   mPinTrigIzq = _pinTrigIzq;
+
 }
 
 // ----------- Destructor de la clase -----------
@@ -37,6 +38,11 @@ void Golpecitos::inicialize(){
 
   // Configure bluetooth seral
   Serial1.begin(38400);
+
+  // Configure controller pointer
+  mPid = new PID(1.0, 0.0 , 0.0 ,0.0,10.0);
+
+  mPid->reference(30.0);
 
   return;
 }
@@ -70,8 +76,8 @@ void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //functi
 //----------------------------------------------------------------------------------
 void Golpecitos::cinematica(float _lin, float _ang){
 
-	mSpeed[0]=(_lin - eje * _ang) /r;
-	mSpeed[1]=(_lin + eje * _ang) /r;
+	mSpeed[0]=(_lin - mDistWheels * _ang) /mWheelRadius;
+	mSpeed[1]=(_lin + mDistWheels * _ang) /mWheelRadius;
 
 	return;
 }
@@ -132,28 +138,46 @@ void Golpecitos::step(){
   char value;
   value = readBluetooth();
 
+  // APARTADO 1
   switch (value){
-
     case '01': // Avanza linea recta
-      move(300.0 , 0.0);
+      move(mVelCrucero , 0.0);
 
-    case '02':  // retrocede
-      move(-300.0 , 0.0);
+    case '02': // rotar sentido horario
+      move(0.0 , mVelMax);
 
-    case '03': // rotar sentido horario
-      move(0.0 , 800.0);
+    case '03':  // retrocede
+      move(-mVelCrucero , 0.0);
 
     case '04':  // rotar sentido antihorario
-      move(800.0 , 0.0);
+      move(mVelMax , 0.0);
 
     case '05': // girar izquierda
-      move(800.0 , 300.0);
+      move(mVelMax , mVelCrucero);
 
     case '06':  // girar derecha
-      move(300.0 , 800.0);
+      move(mVelCrucero , mVelMax);
     
     default:
       move(0.0 , 0.0);
   }
 
+
+  // APARTADO 2. CONTROL
+}
+
+
+void Golpecitos::stepControl(){
+
+  // Feed PIDs
+  float currentTime = millis();
+  double incT = double(currentTime - mLastTime);
+
+  float distanciaSonar1 = readSonar(1);
+  float outPID = mPid->update( distanciaSonar1 , incT); // entrada -> medida ; salida -> (?)
+
+  // Aqui se deberia actuar con la salida del control
+
+
+  mLastTime = millis();
 }
