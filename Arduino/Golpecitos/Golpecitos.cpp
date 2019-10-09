@@ -2,11 +2,14 @@
 #include "Golpecitos.h"
 
 // ----------- Constructor de la clase -----------
-Golpecitos::Golpecitos(int _pinEcho,int _pinTrig) {
+Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	Serial.println("Se ha llamado al constructor de la clase");
 
-  mPinEcho = _pinEcho;
-  mPinTrig = _pinTrig;
+  mPinEchoIzq = _pinEchoIzq;
+  mPinTrigIzq = _pinTrigIzq;
+
+  mPinEchoIzq = _pinEchoIzq;
+  mPinTrigIzq = _pinTrigIzq;
 }
 
 // ----------- Destructor de la clase -----------
@@ -23,14 +26,17 @@ void Golpecitos::inicialize(){
     // Iniciamos el monitor serie para mostrar el resultado
   Serial.begin(9600);
   // Ponemos el pin Trig en modo salida
-  pinMode(mPinTrig, OUTPUT);
+  pinMode(mPinTrigIzq, OUTPUT);
   // Ponemos el pin Echo en modo entrada
-  pinMode(mPinEcho, INPUT);
+  pinMode(mPinEchoIzq, INPUT);
 
   /* Motors pin init */
   pinMode(mL_a, OUTPUT);   pinMode(mL_b, OUTPUT);
   pinMode(mR_a, OUTPUT);   pinMode(mR_b, OUTPUT);
   pinMode(mL_en, OUTPUT);  pinMode(mR_en, OUTPUT);
+
+  // Configure bluetooth seral
+  Serial1.begin(38400);
 
   return;
 }
@@ -38,16 +44,22 @@ void Golpecitos::inicialize(){
 //----------------------------------------------------------------------------------
 void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //function to write _pwm 2 motors & manage directions
     if(_pwm > 0){
+
       if (_pwm>255) _pwm=255;
-        digitalWrite(_dir1, HIGH);
-        digitalWrite(_dir2, LOW);
-        analogWrite(_enable, _pwm);
+      
+      digitalWrite(_dir1, HIGH);
+      digitalWrite(_dir2, LOW);
+      analogWrite(_enable, _pwm);
+
     }	else if(_pwm < 0){
+
       if (_pwm<-255) _pwm=-255;
-        digitalWrite(_dir1, LOW);
-        digitalWrite(_dir2, HIGH);
-        analogWrite(_enable, abs(_pwm));
-    }    else{
+      
+      digitalWrite(_dir1, LOW);
+      digitalWrite(_dir2, HIGH);
+      analogWrite(_enable, abs(_pwm));
+
+    }else{
         digitalWrite(_enable, LOW);
     }
 
@@ -57,8 +69,9 @@ void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //functi
 
 //----------------------------------------------------------------------------------
 void Golpecitos::cinematica(float _lin, float _ang){
-	mSpeed[0]=(_lin-eje*_ang)/r;
-	mSpeed[1]=(_lin+eje*_ang)/r;
+
+	mSpeed[0]=(_lin - eje * _ang) /r;
+	mSpeed[1]=(_lin + eje * _ang) /r;
 
 	return;
 }
@@ -74,33 +87,73 @@ void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_i
 }
 
 //----------------------------------------------------------------------------------
-void Golpecitos::readSonar(int _sonarNum){
+float Golpecitos::readSonar(int _sonarNum){
   iniciarTrigger();
   
   // La función pulseIn obtiene el tiempo que tarda en cambiar entre estados, en este caso a HIGH
-  unsigned long tiempo = pulseIn(mPinEcho, HIGH);
+  unsigned long tiempo = pulseIn(mPinEchoIzq, HIGH);
     // Obtenemos la distancia en cm, hay que convertir el tiempo en segudos ya que está en microsegundos
   // por eso se multiplica por 0.000001
   mDistSonar = tiempo * 0.000001 * mVelSon / 2.0;
-  Serial.print(mDistSonar);
-  Serial.print("cm");
-  Serial.println();
-  delay(1000);
 
-  return;
+  return mDistSonar;
 }
 
 
-// Método que inicia la secuencia del Trigger para comenzar a medir
+//----------------------------------------------------------------------------------
 void Golpecitos::iniciarTrigger(){
   // Ponemos el Triiger en estado bajo y esperamos 2 ms
-  digitalWrite(mPinTrig, LOW);
+  digitalWrite(mPinTrigIzq, LOW);
   delayMicroseconds(2);
   
   // Ponemos el pin Trigger a estado alto y esperamos 10 ms
-  digitalWrite(mPinTrig, HIGH);
+  digitalWrite(mPinTrigIzq, HIGH);
   delayMicroseconds(10);
   
   // Comenzamos poniendo el pin Trigger en estado bajo
-  digitalWrite(mPinTrig, LOW);
+  digitalWrite(mPinTrigIzq, LOW);
+}
+
+//----------------------------------------------------------------------------------
+char Golpecitos::readBluetooth(){
+  if (Serial1.available()>0){
+    //leeemos la opcion
+    mBluetoothData = Serial1.read();
+     Serial.write(mBluetoothData);
+    
+    }
+
+  return mBluetoothData;
+}
+
+//----------------------------------------------------------------------------------
+void Golpecitos::step(){
+
+  char value;
+  value = readBluetooth();
+
+  switch (value){
+
+    case '01': // Avanza linea recta
+      move(300.0 , 0.0);
+
+    case '02':  // retrocede
+      move(-300.0 , 0.0);
+
+    case '03': // rotar sentido horario
+      move(0.0 , 800.0);
+
+    case '04':  // rotar sentido antihorario
+      move(800.0 , 0.0);
+
+    case '05': // girar izquierda
+      move(800.0 , 300.0);
+
+    case '06':  // girar derecha
+      move(300.0 , 800.0);
+    
+    default:
+      move(0.0 , 0.0);
+  }
+
 }

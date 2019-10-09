@@ -14,7 +14,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
      HIGH   |    LOW       |     LOW      |MOTOR PARADO        |
  */
 
-Golpecitos golpes(7,6);
+Golpecitos golpes(6,7,6,7);
 
 void setup() {
   //Serial.begin(9600); debug, cuidao que en golpecitos hay serial.println que no se si chocan con el bluetooth
@@ -26,27 +26,15 @@ void setup() {
 
 void loop() {
 
-  golpes.readSonar(1);
+  float distanciaSonar1 = golpes.readSonar(1);
+  Serial.print(distanciaSonar1);
+  Serial.print("cm");
+  Serial.println();
 
-  
-  // golpes.move(vmax,0);
-  // delay(1000);
 
-  // golpes.move(-vmax,0);
-  // delay(1000);
+  //golpes.readBluetooth();
+  golpes.step();
 
-  // golpes.move(0,vmax);
-  // delay(1000);
 
-  // golpes.move(0,-vmax);
-  // delay(1000);
-
-  // golpes.move(vmax,vcrucero);
-  // delay(1000);
-
-  // golpes.move(-vmax,-vcrucero);
-  // delay(1000);
-
-  // golpes.move(0,0);
-  // delay(1000);
+  delay(1000);
 }

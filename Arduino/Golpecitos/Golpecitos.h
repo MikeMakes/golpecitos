@@ -19,7 +19,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
 class Golpecitos{
 
     public:
-      Golpecitos(int _pinEcho,int _pinTrig);
+      Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha);
       ~Golpecitos();
 
       void inicialize();
@@ -29,29 +29,39 @@ class Golpecitos{
       void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 
 
-      void readSonar(int _sonarNum);
+      float readSonar(int _sonarNum);
+
+      char readBluetooth();
+
+      void step();
 
     public:
       float mSpeed[2]; // Velocidad de las ruedas: 0-izq y 1-dch
       float mDistSonar;
 
    private:
-    int mPinTrig = 7;
-    int mPinEcho = 6;
+    int mPinTrigIzq  = 7;
+    int mPinEchoIzq  = 6;
+    int mPinTrigDcha = 7;
+    int mPinEchoDcha = 6;
 
     // Define the Motors pin numbers (velocity - pwm) 
-    int mL_en= 2;
-    int mR_en= 11;
+    int mL_en = 2;
+    int mR_en = 11;
     // Motors directions
-    int mL_a =3;
-    int mL_b =4;
-    int mR_a =13;
-    int mR_b =12;
+    int mL_a = 3;
+    int mL_b = 4;
+    int mR_a = 13;
+    int mR_b = 12;
+
+    // Variable to save bluetooth data
+    char mBluetoothData;
  
     const float mVelSon = 34000.0;
 
    private:
 
+    // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger();
 
 };
