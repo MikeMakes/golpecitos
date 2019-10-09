@@ -16,37 +16,43 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
      HIGH   |    LOW       |     LOW      |MOTOR PARADO        |
  */
 
-// Define the Motors pin numbers (velocity - pwm) 
-#define mL_en 2
-#define mR_en 11
-// Motors directions
-#define mL_a 3
-#define mL_b 4
-#define mR_a 13
-#define mR_b 12
-
 class Golpecitos{
 
-    // Public variables (Puede acceder cualquiera)
     public:
-      Golpecitos();
+      Golpecitos(int _pinEcho,int _pinTrig);
       ~Golpecitos();
-      float mSpeed[2]; // Velocidad de las ruedas: 0-izq y 1-dch
 
-      
-    // Public functions (Puede acceder cualquiera)
-    public:
-		  void saluda();
+      void inicialize();
+      void saluda();
       void cinematica(float lin, float ang) ;
       void move(float _lin, float _ang);
       void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 
-   // Private variables (solo puede acceder la propia clase)
+
+      void readSonar(int _sonarNum);
+
+    public:
+      float mSpeed[2]; // Velocidad de las ruedas: 0-izq y 1-dch
+      float mDistSonar;
+
+   private:
+    int mPinTrig = 7;
+    int mPinEcho = 6;
+
+    // Define the Motors pin numbers (velocity - pwm) 
+    int mL_en= 2;
+    int mR_en= 11;
+    // Motors directions
+    int mL_a =3;
+    int mL_b =4;
+    int mR_a =13;
+    int mR_b =12;
+ 
+    const float mVelSon = 34000.0;
+
    private:
 
-   // Private functions (solo puede acceder la propia clase)
-   private:
-
+    void iniciarTrigger();
 
 };
 
