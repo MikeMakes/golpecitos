@@ -5,11 +5,11 @@
 Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	Serial.println("Se ha llamado al constructor de la clase");
 
-  mPinEchoIzq = _pinEchoIzq;
-  mPinTrigIzq = _pinTrigIzq;
+  mPinEcho[0] = _pinEchoIzq;
+  mPinTrig[0] = _pinTrigIzq;
 
-  mPinEchoIzq = _pinEchoIzq;
-  mPinTrigIzq = _pinTrigIzq;
+  mPinEcho[1] = _pinEchoDcha;
+  mPinTrig[1] = _pinTrigDcha;
 
 }
 
@@ -27,9 +27,11 @@ void Golpecitos::inicialize(){
     // Iniciamos el monitor serie para mostrar el resultado
   Serial.begin(9600);
   // Ponemos el pin Trig en modo salida
-  pinMode(mPinTrigIzq, OUTPUT);
+  pinMode(mPinTrig[0], OUTPUT);
+  pinMode(mPinTrig[1], OUTPUT);
   // Ponemos el pin Echo en modo entrada
-  pinMode(mPinEchoIzq, INPUT);
+  pinMode(mPinEcho[0], INPUT);
+  pinMode(mPinEcho[1], INPUT);
 
   /* Motors pin init */
   pinMode(mL_a, OUTPUT);   pinMode(mL_b, OUTPUT);
@@ -41,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(1.0, 0.0 , 0.0 ,0.0,10.0);
+  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
@@ -84,19 +86,7 @@ void Golpecitos::cinematica(float _lin, float _ang){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_izq _vel[1]=velocidad_rueda_dch
-  Serial.print(" ANTES EE CALCULAR ");
-  Serial.print(_lin);
-  Serial.print(" ");
-  Serial.print(_ang);
-  Serial.println();
-
 	cinematica(_lin,_ang);
-
-  Serial.print("Velocidad calculada ");
-  Serial.print(mSpeed[0]);
-  Serial.print(" ");
-  Serial.print(mSpeed[1]);
-  Serial.println();
   
 	write_pwm(mL_en, mSpeed[0], mL_a, mL_b);
 	write_pwm(mR_en, mSpeed[1], mR_a,mR_b);
@@ -105,31 +95,30 @@ void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_i
 }
 
 //----------------------------------------------------------------------------------
-float Golpecitos::readSonar(int _sonarNum){
-  iniciarTrigger();
-  
+float Golpecitos::readSonar(int _sonarNum){  
+  iniciarTrigger(mPinTrig[_sonarNum]);
   // La función pulseIn obtiene el tiempo que tarda en cambiar entre estados, en este caso a HIGH
-  unsigned long tiempo = pulseIn(mPinEchoIzq, HIGH);
+  unsigned long tiempo = pulseIn(mPinEcho[_sonarNum], HIGH);
     // Obtenemos la distancia en cm, hay que convertir el tiempo en segudos ya que está en microsegundos
   // por eso se multiplica por 0.000001
-  mDistSonar = tiempo * 0.000001 * mVelSon / 2.0;
+  mDistSonar[_sonarNum] = tiempo * 0.000001 * mVelSon / 2.0;
 
-  return mDistSonar;
+  return mDistSonar[_sonarNum];
 }
 
 
 //----------------------------------------------------------------------------------
-void Golpecitos::iniciarTrigger(){
+void Golpecitos::iniciarTrigger(int _pinTrig){
   // Ponemos el Triiger en estado bajo y esperamos 2 ms
-  digitalWrite(mPinTrigIzq, LOW);
+  digitalWrite(_pinTrig, LOW);
   delayMicroseconds(2);
   
   // Ponemos el pin Trigger a estado alto y esperamos 10 ms
-  digitalWrite(mPinTrigIzq, HIGH);
+  digitalWrite(_pinTrig, HIGH);
   delayMicroseconds(10);
   
   // Comenzamos poniendo el pin Trigger en estado bajo
-  digitalWrite(mPinTrigIzq, LOW);
+  digitalWrite(_pinTrig, LOW);
 }
 
 //----------------------------------------------------------------------------------
@@ -182,19 +171,32 @@ void Golpecitos::step(){
   return;
 }
 
-
+//----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
 
   // Feed PIDs
   float currentTime = millis();
   double incT = double(currentTime - mLastTime);
 
-  float distanciaSonar1 = readSonar(1);
-  float outPID = mPid->update( distanciaSonar1 , incT); // entrada -> medida ; salida -> (?)
+  readSonar(0); // 0 es izquierda y 1 es derecha
+  readSonar(1);
+  float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
+  float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
-  //
-  //
-  // 
+  move(outPID,0.0);
+
   mLastTime = millis();
+}
+
+//----------------------------------------------------------------------------------
+void Golpecitos::writeTelemetry(){
+  // Definir string para mandar Aqui
+  // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  
+  Serial1.print(log);
+
+  return;
 }
