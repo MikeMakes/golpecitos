@@ -39,9 +39,9 @@ void Golpecitos::inicialize(){
   // Configure bluetooth seral
   Serial1.begin(38400);
 
+
   // Configure controller pointer
   mPid = new PID(1.0, 0.0 , 0.0 ,0.0,10.0);
-
   mPid->reference(30.0);
 
   return;
@@ -84,8 +84,20 @@ void Golpecitos::cinematica(float _lin, float _ang){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_izq _vel[1]=velocidad_rueda_dch
+  Serial.print(" ANTES EE CALCULAR ");
+  Serial.print(_lin);
+  Serial.print(" ");
+  Serial.print(_ang);
+  Serial.println();
 
 	cinematica(_lin,_ang);
+
+  Serial.print("Velocidad calculada ");
+  Serial.print(mSpeed[0]);
+  Serial.print(" ");
+  Serial.print(mSpeed[1]);
+  Serial.println();
+  
 	write_pwm(mL_en, mSpeed[0], mL_a, mL_b);
 	write_pwm(mR_en, mSpeed[1], mR_a,mR_b);
 
@@ -125,8 +137,7 @@ char Golpecitos::readBluetooth(){
   if (Serial1.available()>0){
     //leeemos la opcion
     mBluetoothData = Serial1.read();
-     Serial.write(mBluetoothData);
-    
+    // Serial.write(mBluetoothData);
     }
 
   return mBluetoothData;
@@ -140,30 +151,35 @@ void Golpecitos::step(){
 
   // APARTADO 1
   switch (value){
-    case '01': // Avanza linea recta
+    case '1': // Avanza linea recta
       move(mVelCrucero , 0.0);
+      break;
 
-    case '02': // rotar sentido horario
-      move(0.0 , mVelMax);
+    case '2': // rotar sentido horario
+      move(0.0 , mVelCrucero );
+      break;
 
-    case '03':  // retrocede
+    case '3':  // retrocede
       move(-mVelCrucero , 0.0);
+      break;
 
-    case '04':  // rotar sentido antihorario
-      move(mVelMax , 0.0);
+    case '4':  // rotar sentido antihorario
+      move(mVelCrucero , 0.0);
+      break;
 
-    case '05': // girar izquierda
-      move(mVelMax , mVelCrucero);
+    case '5': // girar izquierda
+      move(mVelMax - 200.0 , mVelCrucero);
+      break;
 
-    case '06':  // girar derecha
-      move(mVelCrucero , mVelMax);
-    
+    case '6':  // girar derecha
+      move(mVelCrucero , mVelMax - 200.0);
+      break;
+
     default:
       move(0.0 , 0.0);
+      break;
   }
-
-
-  // APARTADO 2. CONTROL
+  return;
 }
 
 
@@ -177,7 +193,8 @@ void Golpecitos::stepControl(){
   float outPID = mPid->update( distanciaSonar1 , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
-
-
+  //
+  //
+  // 
   mLastTime = millis();
 }

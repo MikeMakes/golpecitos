@@ -33,12 +33,12 @@ class Golpecitos{
     void stepControl();
 
   public:
-    float mSpeed[2]; // Velocidad de las ruedas: 0-izq y 1-dch
+    float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
     float mDistSonar;
 
 
 
-    PID *mPid;
+    PID *mPid = nullptr;
     float mLastTime = 0.0; // used in controller
 
   private:

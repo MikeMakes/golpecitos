@@ -1,9 +1,6 @@
 
 #include "Golpecitos.h"
 
-#define vmax 800
-#define vcrucero 300
-
 /*
 ENABLE(PWM) |      A       |     B        |   STATUS           |
 --------------------------------------------------------- |
@@ -14,7 +11,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
      HIGH   |    LOW       |     LOW      |MOTOR PARADO        |
  */
 
-Golpecitos golpes(6,7,6,7);
+Golpecitos golpes(6,7,44,45);
 
 void setup() {
   //Serial.begin(9600); debug, cuidao que en golpecitos hay serial.println que no se si chocan con el bluetooth
@@ -26,10 +23,10 @@ void setup() {
 
 void loop() {
 
-  float distanciaSonar1 = golpes.readSonar(1);
-  Serial.print(distanciaSonar1);
-  Serial.print("cm");
-  Serial.println();
+  // float distanciaSonar1 = golpes.readSonar(1);
+  // Serial.print(distanciaSonar1);
+  // Serial.print("cm");
+  // Serial.println();
 
 
   //golpes.readBluetooth();
