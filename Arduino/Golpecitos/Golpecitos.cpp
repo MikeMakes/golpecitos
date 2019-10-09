@@ -5,11 +5,11 @@
 Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	Serial.println("Se ha llamado al constructor de la clase");
 
-  mPinEchoIzq = _pinEchoIzq;
-  mPinTrigIzq = _pinTrigIzq;
+  mPinEcho[0] = _pinEchoIzq;
+  mPinTrig[0] = _pinTrigIzq;
 
-  mPinEchoIzq = _pinEchoIzq;
-  mPinTrigIzq = _pinTrigIzq;
+  mPinEcho[1] = _pinEchoDcha;
+  mPinTrig[1] = _pinTrigDcha;
 
 }
 
@@ -27,9 +27,11 @@ void Golpecitos::inicialize(){
     // Iniciamos el monitor serie para mostrar el resultado
   Serial.begin(9600);
   // Ponemos el pin Trig en modo salida
-  pinMode(mPinTrigIzq, OUTPUT);
+  pinMode(mPinTrig[0], OUTPUT);
+  pinMode(mPinTrig[1], OUTPUT);
   // Ponemos el pin Echo en modo entrada
-  pinMode(mPinEchoIzq, INPUT);
+  pinMode(mPinEcho[0], INPUT);
+  pinMode(mPinEcho[1], INPUT);
 
   /* Motors pin init */
   pinMode(mL_a, OUTPUT);   pinMode(mL_b, OUTPUT);
@@ -41,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(1.0, 0.0 , 0.0 ,0.0,10.0);
+  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
@@ -108,11 +110,11 @@ float Golpecitos::readSonar(int _sonarNum){
 //----------------------------------------------------------------------------------
 void Golpecitos::iniciarTrigger(int _pinTrig){
   // Ponemos el Triiger en estado bajo y esperamos 2 ms
-  digitalWrite(_pintTrig, LOW);
+  digitalWrite(_pinTrig, LOW);
   delayMicroseconds(2);
   
   // Ponemos el pin Trigger a estado alto y esperamos 10 ms
-  digitalWrite(_pintTrig, HIGH);
+  digitalWrite(_pinTrig, HIGH);
   delayMicroseconds(10);
   
   // Comenzamos poniendo el pin Trigger en estado bajo
@@ -176,12 +178,13 @@ void Golpecitos::stepControl(){
   float currentTime = millis();
   double incT = double(currentTime - mLastTime);
 
-  float distanciaSonar1 = readSonar(1);
-  float outPID = mPid->update( distanciaSonar1 , incT); // entrada -> medida ; salida -> (?)
+  readSonar(0); // 0 es izquierda y 1 es derecha
+  readSonar(1);
+  float distanciaMedia = (mDistSonar[0]+mDistSonar[1])/2;
+  float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
-  //
-  //
-  // 
+  move(outPID,0.0);
+
   mLastTime = millis();
 }

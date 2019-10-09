@@ -66,7 +66,7 @@ class Golpecitos{
 
   private:
     // Método que inicia la secuencia del Trigger para comenzar a medir
-    void iniciarTrigger();
+    void iniciarTrigger(int _pinTrig);
 
 };
 
