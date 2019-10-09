@@ -34,9 +34,7 @@ class Golpecitos{
 
   public:
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
-    float mDistSonar;
-
-
+    float mDistSonar[2];
 
     PID *mPid = nullptr;
     float mLastTime = 0.0; // used in controller
@@ -45,10 +43,8 @@ class Golpecitos{
     float mWheelRadius = 3.15; // Radio de las ruedas
     float mDistWheels  = 6.425; // Longitud del eje / 2
 
-    int mPinTrigIzq  = 7;
-    int mPinEchoIzq  = 6;
-    int mPinTrigDcha = 7;
-    int mPinEchoDcha = 6;
+    int mPinTrig[2] = {7,9};
+    int mPinEcho[2] = {6,8};
 
     // Define the Motors pin numbers (velocity - pwm) 
     int mL_en = 2;
