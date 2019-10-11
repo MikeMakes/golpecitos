@@ -43,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Se inicializa el controlador
-  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
+  mPid = new PID(-50.0, 0.0 , 0.0 ,-800.0,800.0);
   mPid->reference(30.0);
 
   return;
@@ -194,15 +194,38 @@ void Golpecitos::stepControl(){
 }
 
 //----------------------------------------------------------------------------------
+void Golpecitos::runControl(){
+
+  char value;
+  value = readBluetooth();
+
+  // cambiar valor PID
+  //switch (value){
+  //  case '': 
+      
+  //    break;
+
+  //  default:
+
+  //    break;
+  //}
+
+  stepControl(); // Se hace una iteracion de control
+
+  return;
+}
+
+//----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
   float currentTime = millis();
 
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mRobotMode) +
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]);
   
   mLastTimeLog = millis();
   Serial1.print(log);
-
+  Serial1.println();
+  
   return;
 }
