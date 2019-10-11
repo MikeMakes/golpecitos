@@ -29,6 +29,7 @@ class Golpecitos{
 
     float readSonar(int _sonarNum);
     char readBluetooth();
+    float orienta();
     void step();
     void stepControl();
     void writeTelemetry();
