@@ -2,14 +2,13 @@
 #include "Golpecitos.h"
 
 // ----------- Constructor de la clase -----------
-Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
+Golpecitos::Golpecitos(int _pinEchoIzq = 0,int _pinTrigIzq = 0,int _pinEchoDcha = 0,int _pinTrigDcha = 0) {
 	Serial.println("Se ha llamado al constructor de la clase");
+  if (_pinEchoIzq != 0) mPinEcho[0] = _pinEchoIzq;
+  if (_pinTrigIzq != 0) mPinTrig[0] = _pinTrigIzq;
 
-  mPinEcho[0] = _pinEchoIzq;
-  mPinTrig[0] = _pinTrigIzq;
-
-  mPinEcho[1] = _pinEchoDcha;
-  mPinTrig[1] = _pinTrigDcha;
+  if (_pinEchoDcha != 0) mPinEcho[1] = _pinEchoDcha;
+  if (_pinTrigDcha != 0) mPinTrig[1] = _pinTrigDcha;
 
 }
 

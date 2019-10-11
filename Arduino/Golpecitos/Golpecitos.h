@@ -44,8 +44,8 @@ class Golpecitos{
     float mWheelRadius = 3.15; // Radio de las ruedas
     float mDistWheels  = 6.425; // Longitud del eje / 2
 
-    int mPinTrig[2] = {7,9};
-    int mPinEcho[2] = {6,8};
+    static int mPinTrig[2] = {7,9};  //pines de trigger del ultrasonido por defecto
+    static int mPinEcho[2] = {6,8};  ////pines de echo del ultrasonido por defecto
 
     // Define the Motors pin numbers (velocity - pwm) 
     int mL_en = 2;
