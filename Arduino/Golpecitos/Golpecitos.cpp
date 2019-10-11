@@ -191,29 +191,10 @@ void Golpecitos::stepControl(){
   move(outPID,0.0);
 
   mLastTime = millis();
-}
-
-//----------------------------------------------------------------------------------
-void Golpecitos::runControl(){
-
-  char value;
-  value = readBluetooth();
-
-  // cambiar valor PID
-  //switch (value){
-  //  case '': 
-      
-  //    break;
-
-  //  default:
-
-  //    break;
-  //}
-
-  stepControl(); // Se hace una iteracion de control
 
   return;
 }
+
 
 //----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){

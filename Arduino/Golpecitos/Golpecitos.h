@@ -31,7 +31,6 @@ class Golpecitos{
     char readBluetooth();
     void step();
     void stepControl();
-    void runControl();
     void writeTelemetry();
 
   public:
