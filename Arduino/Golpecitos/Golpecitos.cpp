@@ -205,7 +205,7 @@ void Golpecitos::writeTelemetry(){
 
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
   String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " " +  String(mYaw) " \n";
   
   mLastTimeLog = millis();
   Serial1.print(log);
