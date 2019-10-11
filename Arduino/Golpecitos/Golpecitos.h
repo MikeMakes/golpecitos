@@ -33,7 +33,7 @@ class Golpecitos{
     void step();
     void stepControl();
     void writeTelemetry();
-
+    void runControl();
   public:
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
     float mDistSonar[2];

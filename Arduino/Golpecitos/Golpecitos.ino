@@ -23,15 +23,22 @@ void setup() {
 
 void loop() {
 
-  // float distanciaSonar1 = golpes.readSonar(1);
-  // Serial.print(distanciaSonar1);
-  // Serial.print("cm");
-  // Serial.println();
+ float distanciaSonar1 = golpes.readSonar(1);
+ float distanciaSonar2 = golpes.readSonar(0);
+
+// Serial.print(distanciaSonar1);
+// Serial.print("cm");
+// Serial.print("       ");
+ //Serial.print(distanciaSonar2);
+ //Serial.print("cm");
+// Serial.println();
+ //Serial.print("       ");
+ 
 
 
-  //golpes.readBluetooth();
-  golpes.stepControl();
-  golpes.writeTelemetry();
+ golpes.writeTelemetry();
+golpes.runControl();
+
 
   delay(1000);
 }

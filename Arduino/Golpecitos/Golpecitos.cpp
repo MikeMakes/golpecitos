@@ -41,8 +41,8 @@ void Golpecitos::inicialize(){
   Serial1.begin(38400);
 
 
-  // Se inicializa el controlador
-  mPid = new PID(-25.0, 0.0 , 0.0 ,-800.0,800.0);
+  // Configure controller pointer
+  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
@@ -169,13 +169,6 @@ void Golpecitos::step(){
       break;
   }
   return;
-}
-
-//----------------------------------------------------------------------------------
-float Golpecitos::orienta(){
-  float _incDist = mDistSonar[0]-mDistSonar[1];
-  mYaw = asin(_incDist/mDistSensores);
-  return mYaw;
 }
 
 //----------------------------------------------------------------------------------
