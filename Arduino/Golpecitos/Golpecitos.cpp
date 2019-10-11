@@ -2,13 +2,13 @@
 #include "Golpecitos.h"
 
 // ----------- Constructor de la clase -----------
-Golpecitos::Golpecitos(int _pinEchoIzq = 0,int _pinTrigIzq = 0,int _pinEchoDcha = 0,int _pinTrigDcha = 0) {
+Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	Serial.println("Se ha llamado al constructor de la clase");
-  if (_pinEchoIzq != 0) mPinEcho[0] = _pinEchoIzq;
-  if (_pinTrigIzq != 0) mPinTrig[0] = _pinTrigIzq;
+  mPinEcho[0] = _pinEchoIzq;
+  mPinTrig[0] = _pinTrigIzq;
 
-  if (_pinEchoDcha != 0) mPinEcho[1] = _pinEchoDcha;
-  if (_pinTrigDcha != 0) mPinTrig[1] = _pinTrigDcha;
+  mPinEcho[1] = _pinEchoDcha;
+  mPinTrig[1] = _pinTrigDcha;
 
 }
 
@@ -172,9 +172,9 @@ void Golpecitos::step(){
 }
 
 //----------------------------------------------------------------------------------
-void Golpecitos::orienta(){
-  float incDist = mDistSonar[0]-mDistSonar[1];
-  mYaw = asin(incDist/ejeSonar);
+float Golpecitos::orienta(){
+  float _incDist = mDistSonar[0]-mDistSonar[1];
+  mYaw = asin(_incDist/mDistSensores);
   return mYaw;
 }
 
@@ -207,13 +207,8 @@ void Golpecitos::writeTelemetry(){
   float currentTime = millis();
 
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-<<<<<<< HEAD
   String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
               + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " " +  String(mYaw);
-=======
-  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mRobotMode) +
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]);
->>>>>>> 7e5b363a181646f18e23f10838535c7a7c283d1f
   
   mLastTimeLog = millis();
   Serial1.print(log);

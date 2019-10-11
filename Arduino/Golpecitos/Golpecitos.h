@@ -48,8 +48,8 @@ class Golpecitos{
     float mDistWheels  = 6.425; // Longitud del eje / 2
     float mDistSensores = 20.0; //Distancia de sensor a sensor en cm
 
-    static int mPinTrig[2] = {7,9};  //pines de trigger del ultrasonido por defecto
-    static int mPinEcho[2] = {6,8};  ////pines de echo del ultrasonido por defecto
+    int mPinTrig[2] = {7,9};  //pines de trigger del ultrasonido por defecto
+    int mPinEcho[2] = {6,8};  ////pines de echo del ultrasonido por defecto
 
     // Se definen los pines de los motores (velocity - pwm) 
     int mL_en = 2;
