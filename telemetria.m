@@ -1,22 +1,22 @@
-% Función para mostrar telemetría de robot móvil
-% Laboratorio de Robótica 4º GIERM 18-19
+% Funciï¿½n para mostrar telemetrï¿½a de robot mï¿½vil
+% Laboratorio de Robï¿½tica 4ï¿½ GIERM 18-19
 % Federico Cuesta
-% USO: Pasar como parámetro el nombre del archivo de telemetría con el
+% USO: Pasar como parï¿½metro el nombre del archivo de telemetrï¿½a con el
 % sigiente contenido por fila:
 % -Incremento de tiempo transcurrido desde la lectura anterior (milisegundos),  
 % -Distancia medida por sensor Izq/Frontal (cm), 
 % -Distancia medida por sensor Dch/Trasero(cm), 
 % -Referencia de control (cm), 
-% -Modo activo (0: Parado, 1: Control frontal, … 4),
-% -Velocidad PWM motor Izq (+/-255, negativo indica marcha atrás), 
-% -Velocidad PWM motor Dch (+/-255, negativo indica marcha atrás).
+% -Modo activo (0: Parado, 1: Control frontal, ï¿½ 4),
+% -Velocidad PWM motor Izq (+/-255, negativo indica marcha atrï¿½s), 
+% -Velocidad PWM motor Dch (+/-255, negativo indica marcha atrï¿½s).
 
 function telemetria(archivo)
 
 tel=load(archivo);
 muestras=length(tel);
-disp('Incremento de tiempo mínimo:'); disp(min(tel(:,1)));
-disp('Incremento de tiempo máximo:');disp(max(tel(:,1)));
+disp('Incremento de tiempo mï¿½nimo:'); disp(min(tel(:,1)));
+disp('Incremento de tiempo mï¿½ximo:');disp(max(tel(:,1)));
 disp('Incremento de tiempo promedio:'); disp(mean(tel(:,1)));
 tiempo=zeros(1,muestras);
 tiempo(1)=tel(1,1); %Vector de tiempo absoluto
@@ -25,8 +25,10 @@ for i=2:muestras
 end    
 
 
+tel(:,5)
+
 subplot(2,1,1);
-plot(tiempo,tel(:,2), tiempo,tel(:,3), tiempo,tel(:,4));
+plot(tiempo,(tel(:,3) + tel(:,2))/2,'r', tiempo,tel(:,5),'b');
 xlabel('Tiempo (ms)');
 title('Sensores');
 
