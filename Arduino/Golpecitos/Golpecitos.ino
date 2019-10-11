@@ -36,7 +36,7 @@ void loop() {
  
 
 
- golpes.writeTelemetry();
+//golpes.writeTelemetry();
 golpes.runControl();
 
 

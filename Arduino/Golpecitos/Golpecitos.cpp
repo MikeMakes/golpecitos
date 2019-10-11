@@ -4,6 +4,7 @@
 // ----------- Constructor de la clase -----------
 Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	Serial.println("Se ha llamado al constructor de la clase");
+
   mPinEcho[0] = _pinEchoIzq;
   mPinTrig[0] = _pinTrigIzq;
 
@@ -37,20 +38,19 @@ void Golpecitos::inicialize(){
   pinMode(mR_a, OUTPUT);   pinMode(mR_b, OUTPUT);
   pinMode(mL_en, OUTPUT);  pinMode(mR_en, OUTPUT);
 
-  // Se configura el bluetooth
+  // Configure bluetooth seral
   Serial1.begin(38400);
 
 
   // Configure controller pointer
-  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
+  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
 }
 
 //----------------------------------------------------------------------------------
-// Funcion para escribir los PWM y cambiar las direcciones del robot
-void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ 
+void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //function to write _pwm 2 motors & manage directions
     if(_pwm > 0){
 
       if (_pwm>255) _pwm=255;
@@ -172,12 +172,55 @@ void Golpecitos::step(){
 }
 
 //----------------------------------------------------------------------------------
+void Golpecitos::runControl(){
+  //Identificar kd,kp,o ki
+  //char char1;
+  //String gain;
+  int i=0;
+      if(readBluetooth()=='I'){
+        Serial.print("KI=");
+        while(i<=2 ){
+        i++;
+        Serial.print(readBluetooth());
+        }
+        i=0;
+        Serial.println();
+      }
+      else if(readBluetooth()=='P'){
+        Serial.print("KP=");
+        while(i<=2 ){
+        i++;
+        Serial.print(readBluetooth());
+        }
+        i=0;
+        Serial.println();
+      }
+      else if(readBluetooth()=='D'){
+        Serial.print("KD=");
+        while(i<=2 ){
+        i++;
+        Serial.print(readBluetooth());
+        }
+        i=0;
+        Serial.println();
+      }
+      
+    
+  
+    //Serial.print("antes  ");
+    //Serial.print(mPid->kp());
+    //float newK = -20.0;
+    //mPid->kp(newK);//mPid->kp(float gain);
+    //Serial.print("despues  ");
+    //Serial.print(mPid->kp());
+    //Serial.print(gain);
+}
+  
+
+//----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
 
-  // Cambiamos el modo del robot
-  mRobotMode = 1;
-
-  // Se rellenan los datos para el PIDs
+  // Feed PIDs
   float currentTime = millis();
   double incT = double(currentTime - mLastTime);
 
@@ -190,22 +233,16 @@ void Golpecitos::stepControl(){
   move(outPID,0.0);
 
   mLastTime = millis();
-
-  return;
 }
-
 
 //----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
-  float currentTime = millis();
-
+  // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " " +  String(mYaw);
+  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
-  mLastTimeLog = millis();
   Serial1.print(log);
-  Serial1.println();
-  
+
   return;
 }
