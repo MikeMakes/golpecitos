@@ -11,7 +11,7 @@ ENABLE(PWM) |      A       |     B        |   STATUS           |
      HIGH   |    LOW       |     LOW      |MOTOR PARADO        |
  */
 
-Golpecitos golpes(6,7,44,45);
+Golpecitos golpes(6,7,8,9);
 
 void setup() {
   //Serial.begin(9600); debug, cuidao que en golpecitos hay serial.println que no se si chocan con el bluetooth
@@ -30,8 +30,8 @@ void loop() {
 
 
   //golpes.readBluetooth();
-  golpes.step();
-
+  golpes.stepControl();
+  golpes.writeTelemetry();
 
   delay(1000);
 }

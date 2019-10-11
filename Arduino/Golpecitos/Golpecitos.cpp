@@ -42,7 +42,7 @@ void Golpecitos::inicialize(){
 
 
   // Se inicializa el controlador
-  mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
+  mPid = new PID(-25.0, 0.0 , 0.0 ,-800.0,800.0);
   mPid->reference(30.0);
 
   return;
@@ -197,18 +197,27 @@ void Golpecitos::stepControl(){
   move(outPID,0.0);
 
   mLastTime = millis();
+
+  return;
 }
+
 
 //----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
   float currentTime = millis();
 
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+<<<<<<< HEAD
   String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " " +  String(mYaw) " \n";
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " " +  String(mYaw);
+=======
+  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mRobotMode) +
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]);
+>>>>>>> 7e5b363a181646f18e23f10838535c7a7c283d1f
   
   mLastTimeLog = millis();
   Serial1.print(log);
-
+  Serial1.println();
+  
   return;
 }
