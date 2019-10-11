@@ -38,11 +38,11 @@ void Golpecitos::inicialize(){
   pinMode(mR_a, OUTPUT);   pinMode(mR_b, OUTPUT);
   pinMode(mL_en, OUTPUT);  pinMode(mR_en, OUTPUT);
 
-  // Configure bluetooth seral
+  // Se configura el bluetooth
   Serial1.begin(38400);
 
 
-  // Configure controller pointer
+  // Se inicializa el controlador
   mPid = new PID(1.0, 0.0 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
@@ -50,7 +50,8 @@ void Golpecitos::inicialize(){
 }
 
 //----------------------------------------------------------------------------------
-void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //function to write _pwm 2 motors & manage directions
+// Funcion para escribir los PWM y cambiar las direcciones del robot
+void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ 
     if(_pwm > 0){
 
       if (_pwm>255) _pwm=255;
@@ -174,7 +175,10 @@ void Golpecitos::step(){
 //----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
 
-  // Feed PIDs
+  // Cambiamos el modo del robot
+  mRobotMode = 1;
+
+  // Se rellenan los datos para el PIDs
   float currentTime = millis();
   double incT = double(currentTime - mLastTime);
 
@@ -191,11 +195,13 @@ void Golpecitos::stepControl(){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
-  // Definir string para mandar Aqui
+  float currentTime = millis();
+
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
+  String log = String(float(currentTime - mLastTimeLog)) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + String(mRobotMode) +
               + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
+  mLastTimeLog = millis();
   Serial1.print(log);
 
   return;
