@@ -172,6 +172,13 @@ void Golpecitos::step(){
 }
 
 //----------------------------------------------------------------------------------
+void Golpecitos::orienta(){
+  float incDist = mDistSonar[0]-mDistSonar[1];
+  mYaw = asin(incDist/ejeSonar);
+  return mYaw;
+}
+
+//----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
 
   // Cambiamos el modo del robot

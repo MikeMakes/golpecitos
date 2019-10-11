@@ -36,6 +36,7 @@ class Golpecitos{
   public:
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
     float mDistSonar[2];
+    float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
 
     PID *mPid          = nullptr;
     float mLastTime    = 0.0; // usado para el incremento de tiempo del controlador
@@ -44,6 +45,7 @@ class Golpecitos{
   private:
     float mWheelRadius = 3.15; // Radio de las ruedas
     float mDistWheels  = 6.425; // Longitud del eje / 2
+    float mDistSensores = 20.0; //Distancia de sensor a sensor en cm
 
     static int mPinTrig[2] = {7,9};  //pines de trigger del ultrasonido por defecto
     static int mPinEcho[2] = {6,8};  ////pines de echo del ultrasonido por defecto
