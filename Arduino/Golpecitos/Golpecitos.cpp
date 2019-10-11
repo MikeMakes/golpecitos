@@ -43,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Se inicializa el controlador
-  mPid = new PID(-50.0, 0.0 , 0.0 ,-800.0,800.0);
+  mPid = new PID(-25.0, 0.0 , 0.0 ,-800.0,800.0);
   mPid->reference(30.0);
 
   return;
