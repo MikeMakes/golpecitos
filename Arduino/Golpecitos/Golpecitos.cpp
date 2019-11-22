@@ -175,7 +175,7 @@ void Golpecitos::step(){
 void Golpecitos::runControl(){
   //Identificar kd,kp,o ki
   char charReceived, parametro;
-  const char* number;
+  String number;
 
   charReceived=readBluetooth();
   if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D')){
@@ -186,14 +186,11 @@ void Golpecitos::runControl(){
       number += charReceived;
       charReceived=readBluetooth();
     }
-  Serial1.println();
-  Serial1.print("cadena: ");
-  Serial1.println(number);
 
-  if (parametro == 'P') mPid->mKp = atof(number);
-  if (parametro == 'I') mPid->mKi = atof(number);
-  if (parametro == 'D') mPid->mKd = atof(number);
-
+  if (parametro == 'P') mPid->mKp = number.toFloat();
+  if (parametro == 'I') mPid->mKi = number.toFloat();
+  if (parametro == 'D') mPid->mKd = number.toFloat();
+  
   }
 }
   

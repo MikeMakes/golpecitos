@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include "PID.h"
 
-#include <string.h> //Librerias para las pasar los char a strings y de ahi a floats
-#include <stdlib.h>
+//#include <string.h> //Librerias para las pasar los char a strings y de ahi a floats 
+//#include <stdlib.h>
 
 /*
 ENABLE(PWM) |      A       |     B        |   STATUS           |
