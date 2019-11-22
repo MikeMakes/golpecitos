@@ -102,11 +102,6 @@ float Golpecitos::readSonar(int _sonarNum){
     // Obtenemos la distancia en cm, hay que convertir el tiempo en segudos ya que está en microsegundos
   // por eso se multiplica por 0.000001
   mDistSonar[_sonarNum] = tiempo * 0.000001 * mVelSon / 2.0;
-if(_sonarNum==0){
-  mRecentTime = mCurrentTime ;
-  mCurrentTime  = millis();
-  mTime = mCurrentTime  - mRecentTime;
-}
   return mDistSonar[_sonarNum];
 }
 
@@ -204,7 +199,7 @@ void Golpecitos::stepControl(){
 
   // Feed PIDs
   float currentTime = millis();
-  double incT = double(currentTime - mLastTime);
+  incT = double(currentTime - mLastTime);
 
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
@@ -217,8 +212,8 @@ void Golpecitos::stepControl(){
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(mTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
-              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
+              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n\n";
   
   Serial1.print(log);
 
