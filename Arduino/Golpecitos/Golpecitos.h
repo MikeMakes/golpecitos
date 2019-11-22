@@ -47,7 +47,9 @@ class Golpecitos{
     float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
 
     PID *mPid          = nullptr;
+    float mRecentTime = 0.0;
     float mLastTime    = 0.0; // usado para el incremento de tiempo del controlador
+    float mTime = 0.0;
     float mLastTimeLog = 0.0; // usado para el log de salida
 
     // modo del robot [0 - parado ; 1 - control frontal ; 2 - control frontal perpendicular ; 3 - control lateral ; 4 - control lateral paralelo]
