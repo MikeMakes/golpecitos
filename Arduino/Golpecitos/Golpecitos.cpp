@@ -186,6 +186,9 @@ void Golpecitos::runControl(){
       number += charReceived;
       charReceived=readBluetooth();
     }
+  Serial1.println();
+  Serial1.print("cadena: ");
+  Serial1.println(number);
 
   if (parametro == 'P') mPid->mKp = atof(number);
   if (parametro == 'I') mPid->mKi = atof(number);
