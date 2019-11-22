@@ -34,6 +34,10 @@ class Golpecitos{
     void stepControl();
     void writeTelemetry();
     void runControl();
+
+    // Método que inicia la secuencia del Trigger para comenzar a medir
+    void iniciarTrigger(int _pinTrig);
+
   public:
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
     float mDistSonar[2];
@@ -42,6 +46,9 @@ class Golpecitos{
     PID *mPid          = nullptr;
     float mLastTime    = 0.0; // usado para el incremento de tiempo del controlador
     float mLastTimeLog = 0.0; // usado para el log de salida
+
+    // modo del robot [0 - parado ; 1 - control frontal ; 2 - control frontal perpendicular ; 3 - control lateral ; 4 - control lateral paralelo]
+    int mRobotMode = 0;
 
   private:
     float mWheelRadius = 3.15; // Radio de las ruedas
@@ -60,21 +67,14 @@ class Golpecitos{
     int mR_a = 13;
     int mR_b = 12;
 
-    float mVelMax     = 800.0; // equivale a 255 pwm
-    float mVelCrucero = 300.0;
+    float mVelMax     = 400.0; // 800.0 equivale a 255 pwm
+    float mVelCrucero = 150.0;
 
     // Variable usada para guardar el dato del bluetooth
     char mBluetoothData;
     
     // used in sonars
     const float mVelSon = 34000.0;
-
-    // modo del robot [0 - parado ; 1 - control frontal ; 2 - control frontal perpendicular ; 3 - control lateral ; 4 - control lateral paralelo]
-    int mRobotMode = 0;
-
-  private:
-    // Método que inicia la secuencia del Trigger para comenzar a medir
-    void iniciarTrigger(int _pinTrig);
 
 };
 
