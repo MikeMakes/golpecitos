@@ -231,15 +231,16 @@ void Golpecitos::stepControl(){
 
   // Aqui se deberia actuar con la salida del control
   move(outPID,0.0); // (linear , angular)
-
+  mRecentTime = mLastTime;
   mLastTime = millis();
+  mTime = mLastTime - mRecentTime;
 }
 
 //----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
+  String log = String(mTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
               + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
   Serial1.print(log);
