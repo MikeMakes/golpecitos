@@ -220,7 +220,7 @@ void Golpecitos::writeTelemetry(){
   String log = String(mTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
               + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
-  Serial1.print(log);
+  Serial1.println(log);
 
   return;
 }

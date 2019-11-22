@@ -32,6 +32,5 @@ void loop() {
   golpes.stepControl();
   golpes.writeTelemetry();
 
-
-  delay(1000);
+  delay(100);
 }
