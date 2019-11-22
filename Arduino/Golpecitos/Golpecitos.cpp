@@ -102,7 +102,11 @@ float Golpecitos::readSonar(int _sonarNum){
     // Obtenemos la distancia en cm, hay que convertir el tiempo en segudos ya que está en microsegundos
   // por eso se multiplica por 0.000001
   mDistSonar[_sonarNum] = tiempo * 0.000001 * mVelSon / 2.0;
-
+if(_sonarNum==0){
+  mRecentTime = mCurrentTime ;
+  mCurrentTime  = millis();
+  mTime = mCurrentTime  - mRecentTime;
+}
   return mDistSonar[_sonarNum];
 }
 
@@ -209,7 +213,7 @@ void Golpecitos::stepControl(){
   readSonar(1);
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
   float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
-
+  mLastTime = millis();
   // Aqui se deberia actuar con la salida del control
 }
 
