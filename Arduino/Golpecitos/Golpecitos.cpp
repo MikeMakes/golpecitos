@@ -205,8 +205,10 @@ void Golpecitos::stepControl(){
   readSonar(1);
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
   float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
+
+  move(outPID,0.0);
+
   mLastTime = millis();
-  // Aqui se deberia actuar con la salida del control
 }
 
 void Golpecitos::writeTelemetry(){
