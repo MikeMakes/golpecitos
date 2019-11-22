@@ -43,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0); // Kp , Ki , Kd , minSat , maxSat
+  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
@@ -89,7 +89,7 @@ void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_i
 	cinematica(_lin,_ang);
   
 	write_pwm(mL_en, mSpeed[0], mL_a, mL_b);
-	write_pwm(mR_en, mSpeed[1], mR_a, mR_b);
+	write_pwm(mR_en, mSpeed[1], mR_a,mR_b);
 
   return;
 }
@@ -174,46 +174,24 @@ void Golpecitos::step(){
 //----------------------------------------------------------------------------------
 void Golpecitos::runControl(){
   //Identificar kd,kp,o ki
-  //char char1;
-  //String gain;
-  int i=0;
-      if(readBluetooth()=='I'){
-        Serial.print("KI=");
-        while(i<=2 ){
-          i++;
-          Serial.print(readBluetooth());
-        }
-        i=0;
-        Serial.println();
-      }
-      else if(readBluetooth()=='P'){
-        Serial.print("KP=");
-        while(i<=2 ){
-          i++;
-          Serial.print(readBluetooth());
-        }
-        i=0;
-        Serial.println();
-      }
-      else if(readBluetooth()=='D'){
-        Serial.print("KD=");
-        while(i<=2 ){
-          i++;
-          Serial.print(readBluetooth());
-        }
-        i=0;
-        Serial.println();
-      }
-      
+  char charReceived, parametro;
+  string number;
+
+  charReceived=readBluetooth();
+  if(charReceived == 'P') || (charReceived == 'I') || (charReceived == 'D'){
+    parametro = charReceived;
     
-  
-    //Serial.print("antes  ");
-    //Serial.print(mPid->mKp);
-    //float newK = -20.0;
-    //mPid->mKp = newK;//mPid->kp(float gain);
-    //Serial.print("despues  ");
-    //Serial.print(mPid->mKp);
-    //Serial.print(gain);
+    charReceived=readBluetooth();
+    while(charReceived!='*') {
+      number += charReceived;
+      charReceived=readBluetooth();
+    }
+
+  if (parametro == 'P') mPid->mKp = atof(number);
+  if (parametro == 'I') mPid->mKi = atof(number);
+  if (parametro == 'D') mPid->mKd = atof(number);
+
+  }
 }
   
 
@@ -230,7 +208,7 @@ void Golpecitos::stepControl(){
   float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
-  move(outPID,0.0); // (linear , angular)
+  move(outPID,0.0);
 
   mLastTime = millis();
 }
@@ -239,8 +217,8 @@ void Golpecitos::stepControl(){
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
-              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
+              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
   Serial1.print(log);
 

@@ -25,8 +25,8 @@ void loop() {
 
   float distanciaSonar1 = golpes.readSonar(1);
   float distanciaSonar2 = golpes.readSonar(0);
-  Serial.print(String("Distancia sonar izquierdo: ")+ distanciaSonar1 + String(" cm\n") + String("Distancia sonar derecho: ")+ distanciaSonar1 + String(" cm"));
-  Serial.println();
+ // Serial.print(String("Distancia sonar izquierdo: ")+ distanciaSonar1 + String(" cm\n") + String("Distancia sonar derecho: ")+ distanciaSonar1 + String(" cm"));
+ // Serial.println();
 
   golpes.runControl();
   golpes.stepControl();
