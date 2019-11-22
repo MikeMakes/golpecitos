@@ -175,10 +175,10 @@ void Golpecitos::step(){
 void Golpecitos::runControl(){
   //Identificar kd,kp,o ki
   char charReceived, parametro;
-  string number;
+  const char* number;
 
   charReceived=readBluetooth();
-  if(charReceived == 'P') || (charReceived == 'I') || (charReceived == 'D'){
+  if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D')){
     parametro = charReceived;
     
     charReceived=readBluetooth();
@@ -208,28 +208,13 @@ void Golpecitos::stepControl(){
   float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
   // Aqui se deberia actuar con la salida del control
-<<<<<<< HEAD
-  move(outPID,0.0);
-
-=======
-  move(outPID,0.0); // (linear , angular)
-  mRecentTime = mLastTime;
->>>>>>> 8525d022b41849aebf3d77e5951c8656e961fd4d
-  mLastTime = millis();
-  mTime = mLastTime - mRecentTime;
 }
 
-//----------------------------------------------------------------------------------
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-<<<<<<< HEAD
-  String log = String(mLastTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) 
-              + " " + String(mPid->reference()) + " " +  String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
-=======
   String log = String(mTime) + " " + String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
               + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
->>>>>>> 8525d022b41849aebf3d77e5951c8656e961fd4d
   
   Serial1.print(log);
 
