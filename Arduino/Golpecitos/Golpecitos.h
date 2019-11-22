@@ -45,11 +45,9 @@ class Golpecitos{
     float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
     float mDistSonar[2];
     float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
-
+  
     PID *mPid          = nullptr;
-    unsigned long mRecentTime = 0;
-    unsigned long  mCurrentTime    = 0; // usado para el incremento de tiempo del controlador
-    unsigned long  mTime = 0;
+    double incT=0;
     float mLastTime = 0.0;
     float mLastTimeLog = 0.0; // usado para el log de salida
 
