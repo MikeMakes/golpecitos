@@ -122,6 +122,13 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
 
 //----------------------------------------------------------------------------------
 char Golpecitos::readBluetooth(){
+/*  COMANDOS
+    M {0,1,2} para cambiar el modo
+    T P/I U/D para Tunear (cambiar) la ganancia Proporcional o Integral hacia Up o Down (+0.1 o -0.1)
+    P {float} para cambiar la ganancia proporcional
+    I {float} "" integral
+    D {float} "" derivativa
+*/
   if (Serial1.available()>0){
     mBluetoothData = Serial1.read(); // Guarda el primer byte recivido en mBluetoothData
 
@@ -187,12 +194,26 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
 }
 
 void Golpecitos::tunePID(){  // Checks for a change request of P,I,D from bluetooth
-    if(mBluetoothData == 'U'){
-      mPid->mKp = mPid->mKp + 0.1;
+  if(mBluetoothData == 'T'){
+    
+    if(mBluetoothCmd[1] == 'P'){
+      if(mBluetoothCmd[2] == 'U'){
+        mPid->mKp = mPid->mKp + 0.1;
+      }
+      else if(mBluetoothCmd[2] == 'D'){
+        mPid->mKp = mPid->mKp - 0.1;
+      }
+
+    } else if(mBluetoothCmd[1] == 'I'){
+      if(mBluetoothCmd[2] == 'U'){
+        mPid->mKi = mPid->mKi + 0.1;
+      }
+      else if(mBluetoothCmd[2] == 'D'){
+        mPid->mKi = mPid->mKi - 0.1;
+      }
     }
-    else if(mBluetoothData == 'D'){
-      mPid->mKp = mPid->mKp - 0.1;
-    }
+
+  }
 }
   
 
