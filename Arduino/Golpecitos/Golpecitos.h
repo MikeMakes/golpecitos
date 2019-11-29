@@ -36,7 +36,7 @@ class Golpecitos{
     void step();
     void stepControl();
     void writeTelemetry();
-    void runControl();
+    void changePID();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);

@@ -171,7 +171,7 @@ void Golpecitos::step(){
 }
 
 //----------------------------------------------------------------------------------
-void Golpecitos::runControl(){
+void Golpecitos::changePID(){  // Checks for a change request of P,I,D from bluetooth
   //Identificar kd,kp,o ki
   char charReceived, parametro;
   String number;
