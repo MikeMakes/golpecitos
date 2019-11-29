@@ -43,8 +43,10 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-100.0, 0.0 , 0.0 ,-803.0,803.0);
+  mPid = new PID(-5.0, -0.01 , 0.0 ,-803.0,803.0);
+  mPidAng = new PID(-5.0, -0.01 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
+  mPidAng->reference(0.0);
 
   return;
 }
