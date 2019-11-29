@@ -195,13 +195,11 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
 
 void Golpecitos::changeRef(){  // Checks for a change request of P,I,D from bluetooth
   //Identificar kd,kp,o ki
-  char charReceived, parametro;
+  char charReceived;
   String number;
 
   charReceived=readBluetooth();
-  if(charReceived == 'R'){
-    parametro = charReceived;
-    
+  if(charReceived == 'R'){    
     charReceived=readBluetooth();
     while(charReceived!='*') {
       number += charReceived;
