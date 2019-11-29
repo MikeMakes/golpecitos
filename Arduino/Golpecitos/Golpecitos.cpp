@@ -43,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0);
+  mPid = new PID(-100.0, 0.0 , 0.0 ,-803.0,803.0);
   mPid->reference(30.0);
 
   return;
@@ -192,7 +192,25 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
   
   }
 }
-  
+
+void Golpecitos::changeRef(){  // Checks for a change request of P,I,D from bluetooth
+  //Identificar kd,kp,o ki
+  char charReceived, parametro;
+  String number;
+
+  charReceived=readBluetooth();
+  if(charReceived == 'R'){
+    parametro = charReceived;
+    
+    charReceived=readBluetooth();
+    while(charReceived!='*') {
+      number += charReceived;
+      charReceived=readBluetooth();
+    }
+
+   mPid->reference(number.toFloat());
+  }
+} 
 
 //----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
