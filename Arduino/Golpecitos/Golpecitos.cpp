@@ -124,7 +124,7 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
 char Golpecitos::readBluetooth(){
 /*  COMANDOS
     M {0,1,2} para cambiar el modo
-    T P/I U/D para Tunear (cambiar) la ganancia Proporcional o Integral hacia Up o Down (+0.1 o -0.1)
+    //T P/I U/D para Tunear (cambiar) la ganancia Proporcional o Integral hacia Up o Down (+0.1 o -0.1)
     P {float} para cambiar la ganancia proporcional
     I {float} "" integral
     D {float} "" derivativa
@@ -146,35 +146,37 @@ char Golpecitos::readBluetooth(){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::step(){ // APARTADO 1
+  if (mBluetoothData=='Z') {
+    Serial1.println("Movimiento manual");
+    switch (mBluetoothCmd[1]){
+      case '1': // Avanza linea recta
+        move(mVelCrucero , 0.0);
+        break;
 
-  switch (mBluetoothData){
-    case '1': // Avanza linea recta
-      move(mVelCrucero , 0.0);
-      break;
+      case '2': // rotar sentido horario
+        move(0.0 , mVelCrucero );
+        break;
 
-    case '2': // rotar sentido horario
-      move(0.0 , mVelCrucero );
-      break;
+      case '3':  // retrocede
+        move(-mVelCrucero , 0.0);
+        break;
 
-    case '3':  // retrocede
-      move(-mVelCrucero , 0.0);
-      break;
+      case '4':  // rotar sentido antihorario
+        move(mVelCrucero , 0.0);
+        break;
 
-    case '4':  // rotar sentido antihorario
-      move(mVelCrucero , 0.0);
-      break;
+      case '5': // girar izquierda
+        move(mVelMax - 200.0 , mVelCrucero);
+        break;
 
-    case '5': // girar izquierda
-      move(mVelMax - 200.0 , mVelCrucero);
-      break;
+      case '6':  // girar derecha
+        move(mVelCrucero , mVelMax - 200.0);
+        break;
 
-    case '6':  // girar derecha
-      move(mVelCrucero , mVelMax - 200.0);
-      break;
-
-    default:
-      move(0.0 , 0.0);
-      break;
+      default:
+        move(0.0 , 0.0);
+        break;
+    }
   }
   return;
 }
@@ -182,8 +184,11 @@ void Golpecitos::step(){ // APARTADO 1
 //----------------------------------------------------------------------------------
 void Golpecitos::changePID(){  // Checks for a change request of P,I,D from bluetooth
   if(mBluetoothData == 'P' || (mBluetoothData == 'I') || (mBluetoothData == 'D')){
+    Serial1.println("Cambiando PID");
+
     String number;
-    for(int i=1; i++; i<8){
+    int i;
+    for(i=1; i++; i<8){
       number+=mBluetoothCmd[i];
     }
 
@@ -247,6 +252,7 @@ void Golpecitos::writeTelemetry(){
 
 int Golpecitos::estado(){
   if (mBluetoothData == 'M'){
+    Serial1.println("Nuevo modo");
     if (mBluetoothCmd[1] == '0'){
       mRobotMode = 0;
     } else if (mBluetoothCmd[1] == '1'){
