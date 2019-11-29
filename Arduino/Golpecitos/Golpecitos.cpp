@@ -43,7 +43,7 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0);
+  mPid = new PID(-100.0, 0.0 , 10.0 ,-803.0,803.0); 
   mPid->reference(30.0);
 
   return;
@@ -123,22 +123,24 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
 //----------------------------------------------------------------------------------
 char Golpecitos::readBluetooth(){
   if (Serial1.available()>0){
-    //leeemos la opcion
-    mBluetoothData = Serial1.read();
-    // Serial.write(mBluetoothData);
-    }
+    mBluetoothData = Serial1.read(); // Guarda el primer byte recivido en mBluetoothData
 
+    char cmd; // Si hay mas bytes guardamos un posible comando en mBluetoothCmd
+    int i=0;
+    while((cmd != '*') && (i<8)) { // Hasta recivir '*' o un maximo de 8 bytes
+      cmd = Serial1.read(); // Y vamos llenandolo
+      mBluetoothCmd[i] = cmd; // Creamos el buffer del comando
+      i++;
+    }
+  
+  }
   return mBluetoothData;
 }
 
 //----------------------------------------------------------------------------------
-void Golpecitos::step(){
+void Golpecitos::step(){ // APARTADO 1
 
-  char value;
-  value = readBluetooth();
-
-  // APARTADO 1
-  switch (value){
+  switch (mBluetoothData){
     case '1': // Avanza linea recta
       move(mVelCrucero , 0.0);
       break;
@@ -172,25 +174,25 @@ void Golpecitos::step(){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::changePID(){  // Checks for a change request of P,I,D from bluetooth
-  //Identificar kd,kp,o ki
-  char charReceived, parametro;
-  String number;
-
-  charReceived=readBluetooth();
-  if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D')){
-    parametro = charReceived;
-    
-    charReceived=readBluetooth();
-    while(charReceived!='*') {
-      number += charReceived;
-      charReceived=readBluetooth();
+  if(mBluetoothData == 'P' || (mBluetoothData == 'I') || (mBluetoothData == 'D')){
+    String number;
+    for(int i=1; i++; i<8){
+      number+=mBluetoothCmd[i];
     }
 
-  if (parametro == 'P') mPid->mKp = number.toFloat();
-  if (parametro == 'I') mPid->mKi = number.toFloat();
-  if (parametro == 'D') mPid->mKd = number.toFloat();
-  
+    if (mBluetoothData == 'P') mPid->mKp = number.toFloat();
+    if (mBluetoothData == 'I') mPid->mKi = number.toFloat();
+    if (mBluetoothData == 'D') mPid->mKd = number.toFloat();
   }
+}
+
+void Golpecitos::tunePID(){  // Checks for a change request of P,I,D from bluetooth
+    if(mBluetoothData == 'U'){
+      mPid->mKp = mPid->mKp + 0.1;
+    }
+    else if(mBluetoothData == 'D'){
+      mPid->mKp = mPid->mKp - 0.1;
+    }
 }
   
 
@@ -220,4 +222,32 @@ void Golpecitos::writeTelemetry(){
   Serial1.println(log);
 
   return;
+}
+
+int Golpecitos::estado(){
+  if (mBluetoothData == 'M'){
+    if (mBluetoothCmd[1] == '0'){
+      mRobotMode = 0;
+    } else if (mBluetoothCmd[1] == '1'){
+      mRobotMode = 1;
+    } else if (mBluetoothCmd[1] == '2'){
+      mRobotMode = 2;
+    }
+  }
+  return mRobotMode;
+}
+
+void Golpecitos::desatado(){
+  readBluetooth();
+  estado();
+  if (mRobotMode==0) {
+    step();
+  } else if (mRobotMode==1){
+    changePID();
+    tunePID();
+    stepControl();
+    writeTelemetry();  //Log out telemetry by bluetooth : incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+  } else if (mRobotMode==2){
+    Serial1.println("illo loco que pasa q hase tu aqi");
+  }
 }

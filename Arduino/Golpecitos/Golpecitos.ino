@@ -17,19 +17,10 @@ void setup() {
   golpes.inicialize();
   golpes.saluda();
 
-  golpes.mRobotMode = 0; // Se fija el modo del robot
+  golpes.mRobotMode = 1; // Se fija el modo del robot
 }
 
 void loop() {
-
-  float distanciaSonar1 = golpes.readSonar(1);
-  float distanciaSonar2 = golpes.readSonar(0);
- // Serial.print(String("Distancia sonar izquierdo: ")+ distanciaSonar1 + String(" cm\n") + String("Distancia sonar derecho: ")+ distanciaSonar1 + String(" cm"));
- // Serial.println();
-
-  golpes.changePID(); //Checks for a change in pid  from phone
-  golpes.stepControl(); //Apply control
-  golpes.writeTelemetry();  //Log out telemetry by bluetooth : incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-
+  golpes.desatado();
   delay(100);
 }

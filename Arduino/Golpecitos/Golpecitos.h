@@ -29,6 +29,8 @@ class Golpecitos{
     void move(float _lin, float _ang);
     void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 
+    int estado();
+    void desatado();
 
     float readSonar(int _sonarNum);
     char readBluetooth();
@@ -37,6 +39,7 @@ class Golpecitos{
     void stepControl();
     void writeTelemetry();
     void changePID();
+    void tunePID();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);
@@ -74,9 +77,9 @@ class Golpecitos{
     float mVelMax     = 400.0; // 800.0 equivale a 255 pwm
     float mVelCrucero = 150.0;
 
-    // Variable usada para guardar el dato del bluetooth
-    char mBluetoothData;
-    
+    char mBluetoothData; // Variable usada para guardar el último dato leído del bluetooth, 1 byte
+    char mBluetoothCmd[8] = {'*','*','*','*','*','*','*','*'}; // Array terminated with '*' that stores last command received (+ data), max 8 bytes
+
     // used in sonars
     const float mVelSon = 34000.0;
 
