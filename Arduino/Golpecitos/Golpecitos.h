@@ -40,6 +40,7 @@ class Golpecitos{
     void writeTelemetry();
     void changePID();
     void tunePID();
+    void changeRef();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);

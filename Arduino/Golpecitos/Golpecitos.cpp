@@ -184,11 +184,11 @@ void Golpecitos::step(){ // APARTADO 1
 //----------------------------------------------------------------------------------
 void Golpecitos::changePID(){  // Checks for a change request of P,I,D from bluetooth
   if(mBluetoothData == 'P' || (mBluetoothData == 'I') || (mBluetoothData == 'D')){
-    Serial1.println("Cambiando PID");
+    Serial1.println("Cambiando PID1");
 
     String number;
-    int i;
-    for(i=1; i++; i<8){
+    for(int i=1; i++; i<8){
+      if (mBluetoothCmd[i]=='*') break;
       number+=mBluetoothCmd[i];
     }
 
