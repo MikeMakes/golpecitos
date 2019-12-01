@@ -184,10 +184,9 @@ void Golpecitos::step(){ // APARTADO 1
 //----------------------------------------------------------------------------------
 void Golpecitos::changePID(){  // Checks for a change request of P,I,D from bluetooth
   if(mBluetoothData == 'P' || (mBluetoothData == 'I') || (mBluetoothData == 'D')){
-    Serial1.println("Cambiando PID1");
-
+    Serial1.println("Cambiando PID");
     String number;
-    for(int i=1; i++; i<8){
+    for(int i=1; i<8; i++){
       if (mBluetoothCmd[i]=='*') break;
       number+=mBluetoothCmd[i];
     }
@@ -201,6 +200,7 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
 void Golpecitos::tunePID(){  // Checks for a change request of P,I,D from bluetooth
   if(mBluetoothData == 'T'){
     
+    Serial1.println("Ajuste fino del PID");
     if(mBluetoothCmd[1] == 'P'){
       if(mBluetoothCmd[2] == 'U'){
         mPid->mKp = mPid->mKp + 0.1;
@@ -211,10 +211,10 @@ void Golpecitos::tunePID(){  // Checks for a change request of P,I,D from blueto
 
     } else if(mBluetoothCmd[1] == 'I'){
       if(mBluetoothCmd[2] == 'U'){
-        mPid->mKi = mPid->mKi + 0.1;
+        mPid->mKi = mPid->mKi + 0.01;
       }
       else if(mBluetoothCmd[2] == 'D'){
-        mPid->mKi = mPid->mKi - 0.1;
+        mPid->mKi = mPid->mKi - 0.01;
       }
     }
 
@@ -252,7 +252,7 @@ void Golpecitos::writeTelemetry(){
 
 int Golpecitos::estado(){
   if (mBluetoothData == 'M'){
-    Serial1.println("Nuevo modo");
+    Serial1.println("Nuevo modo"+String(mRobotMode));
     if (mBluetoothCmd[1] == '0'){
       mRobotMode = 0;
     } else if (mBluetoothCmd[1] == '1'){
