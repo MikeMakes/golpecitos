@@ -37,7 +37,7 @@ class Golpecitos{
     void stepControl();
     void writeTelemetry();
     void changePID();
-    void changeReg();
+    void changeRef();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);
@@ -48,6 +48,7 @@ class Golpecitos{
     float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
   
     PID *mPid          = nullptr;
+    PID *mPidAng          = nullptr;
     double incT=0;
     float mLastTime = 0.0;
     float mLastTimeLog = 0.0; // usado para el log de salida

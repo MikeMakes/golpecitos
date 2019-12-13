@@ -43,8 +43,8 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-5.0, -0.01 , 0.0 ,-803.0,803.0);
-  mPidAng = new PID(-5.0, -0.01 , 0.0 ,-803.0,803.0);
+  mPid = new PID(-75.0, 0.5 , 0.0 ,-803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
+  mPidAng = new PID(0.0, 0.00 , 0.0 , -803.0,803.0 , 50, -50);
   mPid->reference(30.0);
   mPidAng->reference(0.0);
 
@@ -179,7 +179,7 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
   String number;
 
   charReceived=readBluetooth();
-  if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D')){
+  if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D') || (charReceived == 'R')){
     parametro = charReceived;
     
     charReceived=readBluetooth();
@@ -191,6 +191,7 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
   if (parametro == 'P') mPid->mKp = number.toFloat();
   if (parametro == 'I') mPid->mKi = number.toFloat();
   if (parametro == 'D') mPid->mKd = number.toFloat();
+  if (parametro == 'R') mPid->mReference = number.toFloat();
   
   }
 }
@@ -233,7 +234,7 @@ void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
   String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
-              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n\n";
+              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
   Serial1.println(log);
 
