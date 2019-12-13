@@ -37,7 +37,7 @@ class Golpecitos{
     void stepControl();
     void writeTelemetry();
     void changePID();
-    void changeRef();
+    void changeYawPID();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);
@@ -59,7 +59,7 @@ class Golpecitos{
   private:
     float mWheelRadius = 3.15; // Radio de las ruedas
     float mDistWheels  = 6.425; // Longitud del eje / 2
-    float mDistSensores = 20.0; //Distancia de sensor a sensor en cm
+    float mDistSensores = 12.0; //Distancia de sensor a sensor en cm
 
     int mPinTrig[2] = {7,9};  //pines de trigger del ultrasonido por defecto
     int mPinEcho[2] = {6,8};  ////pines de echo del ultrasonido por defecto

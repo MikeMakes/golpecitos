@@ -44,7 +44,7 @@ void Golpecitos::inicialize(){
 
   // Configure controller pointer
   mPid = new PID(-75.0, 0.5 , 0.0 ,-803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
-  mPidAng = new PID(0.0, 0.00 , 0.0 , -803.0,803.0 , 50, -50);
+  mPidAng = new PID(50.0, 0.1 , 0.0 , -803.0,803.0 , 50, -50);
   mPid->reference(30.0);
   mPidAng->reference(0.0);
 
@@ -196,22 +196,29 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
   }
 }
 
-void Golpecitos::changeRef(){  // Checks for a change request of P,I,D from bluetooth
+//----------------------------------------------------------------------------------
+void Golpecitos::changeYawPID(){  // Checks for a change request of P,I,D from bluetooth
   //Identificar kd,kp,o ki
-  char charReceived;
+  char charReceived, parametro;
   String number;
 
   charReceived=readBluetooth();
-  if(charReceived == 'R'){    
+  if(charReceived == 'P' || (charReceived == 'I') || (charReceived == 'D') || (charReceived == 'R')){
+    parametro = charReceived;
+    
     charReceived=readBluetooth();
     while(charReceived!='*') {
       number += charReceived;
       charReceived=readBluetooth();
     }
 
-   mPid->reference(number.toFloat());
+  if (parametro == 'P') mPidAng->mKp = number.toFloat();
+  if (parametro == 'I') mPidAng->mKi = number.toFloat();
+  if (parametro == 'D') mPidAng->mKd = number.toFloat();
+  if (parametro == 'R') mPidAng->mReference = number.toFloat();
+  
   }
-} 
+}
 
 //----------------------------------------------------------------------------------
 void Golpecitos::stepControl(){
@@ -223,9 +230,12 @@ void Golpecitos::stepControl(){
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
-  float outPID = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
+  float outPID    = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
 
-  move(outPID,0.0);
+  mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
+  float outAngPID = mPidAng->update( mYaw , incT);
+
+  move(outPID,outAngPID);
 
   mLastTime = millis();
 }
@@ -233,9 +243,12 @@ void Golpecitos::stepControl(){
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
   // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
-              + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  //String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
+  //            + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPidAng->mKp) + " " + String(mPidAng->mKi) + " " + String(mPidAng->mKd)
+              + " " + String(mPidAng->reference()) + " " + String(mYaw * (180/M_PI)) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
+
   Serial1.println(log);
 
   return;

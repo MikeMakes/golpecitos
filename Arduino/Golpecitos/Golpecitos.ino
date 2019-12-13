@@ -27,7 +27,7 @@ void loop() {
  // Serial.print(String("Distancia sonar izquierdo: ")+ distanciaSonar1 + String(" cm\n") + String("Distancia sonar derecho: ")+ distanciaSonar1 + String(" cm"));
  // Serial.println();
 
-  golpes.changePID(); //Checks for a change in pid  from phone
+  golpes.changeYawPID(); //Checks for a change in pid  from phone
   golpes.stepControl(); //Apply control
   golpes.writeTelemetry();  //Log out telemetry by bluetooth : incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
 
