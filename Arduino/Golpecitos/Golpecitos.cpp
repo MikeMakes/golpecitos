@@ -44,7 +44,7 @@ void Golpecitos::inicialize(){
 
   // Configure controller pointer
   mPid = new PID(-75.0, 0.5 , 0.0 ,-803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
-  mPidAng = new PID(50.0, 0.1 , 0.0 , -803.0,803.0 , 50, -50);
+  mPidAng = new PID(50.0, 0.1 , 0.0 , -803.0,803.0 , 50, -50);//SATURAR EL PWM ANGULAR PARA QUE NO SE VUELVA LOCO
   mPid->reference(30.0);
   mPidAng->reference(0.0);
 
@@ -236,6 +236,36 @@ void Golpecitos::stepControl(){
   float outAngPID = mPidAng->update( mYaw , incT);
 
   move(outPID,outAngPID);
+
+  mLastTime = millis();
+}
+
+void Golpecitos::stepControlParalel(){
+   // Feed PIDs
+  float currentTime = millis();
+  incT = double(currentTime - mLastTime);
+
+  readSonar(0); // 0 es izquierda y 1 es derecha
+  readSonar(1);
+  float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
+  float outPID    = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
+
+  mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
+  float outAngPID = mPidAng->update( mYaw , incT);
+  
+  
+  if(distanciaMedia!=referencia)//Establecer margen
+  {
+    move(mVelCrucero,outPID);
+  }
+  else
+  {
+    move(mVelCrucero,outAngPID);
+  }
+  
+  
+  
+  
 
   mLastTime = millis();
 }
