@@ -15,13 +15,13 @@ class PID{
 
         void setSaturations(float _min, float _max) { mMinSat = _min; mMaxSat = _max; }
 
+        // must be private better
         float mKp, mKi, mKd;
         float mMinSat, mMaxSat;
         float mMinAntiW , mMaxAntiW ; 
-        float mReference;
+
     private:
-
-
+        float mReference;
         float mLastResult, mLastError, mAccumErr;
 
 };

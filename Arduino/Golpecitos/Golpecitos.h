@@ -7,52 +7,32 @@
 //#include <string.h> //Librerias para las pasar los char a strings y de ahi a floats 
 //#include <stdlib.h>
 
-/*
-ENABLE(PWM) |      A       |     B        |   STATUS           |
---------------------------------------------------------- |
-     LOW    |    ----      |    ----      |MOTOR PARADO        |
-     HIGH   |    HIGH      |     LOW      |MOTOR GIRA DELANTE  |
-     HIGH   |    LOW       |     HIGH     |MOTOR GIRA AL REVES |
-     HIGH   |    HIGH      |     HIGH     |MOTOR PARADO        |
-     HIGH   |    LOW       |     LOW      |MOTOR PARADO        |
- */
-
 class Golpecitos{
-
   public:
     Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha);
-    ~Golpecitos();
 
     void inicialize();
-    void saluda();
+    void step();
+    void stepControl();
+    void stepControlParallel();
+    void writeTelemetry();
+
+    void changePID();
+    void changeYawPID();
+
+  private:
     void cinematica(float lin, float ang) ;
     void move(float _lin, float _ang);
     void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 
-
     float readSonar(int _sonarNum);
     char readBluetooth();
     float orienta();
-    void step();
-    void stepControl();
-    void writeTelemetry();
-    void changePID();
-    void changeYawPID();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir
     void iniciarTrigger(int _pinTrig);
 
   public:
-    float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
-    float mDistSonar[2];
-    float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
-  
-    PID *mPid          = nullptr;
-    PID *mPidAng          = nullptr;
-    double incT=0;
-    float mLastTime = 0.0;
-    float mLastTimeLog = 0.0; // usado para el log de salida
-
     // modo del robot [0 - parado ; 1 - control frontal ; 2 - control frontal perpendicular ; 3 - control lateral ; 4 - control lateral paralelo]
     int mRobotMode = 0;
 
@@ -81,6 +61,15 @@ class Golpecitos{
     
     // used in sonars
     const float mVelSon = 34000.0;
+
+    float mSpeed[2] = {0.0 , 0.0}; // Velocidad de las ruedas: 0-izq y 1-dch
+    float mDistSonar[2];
+    float mYaw; //Angulo de orientacion en el plano xy respecto a una supuesta superficie plana frente a los sensores
+  
+    PID *mPid     = nullptr;
+    PID *mPidAng  = nullptr;
+    double mIncT=0;
+    float mLastTime = 0.0;
 
 };
 
