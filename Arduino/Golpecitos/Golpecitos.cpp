@@ -4,7 +4,6 @@
 // ----------- Constructor de la clase -----------
 Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pinTrigDcha) {
 	// Serial.println("Se ha llamado al constructor de la clase");
-
   mPinEcho[0] = _pinEchoIzq;
   mPinTrig[0] = _pinTrigIzq;
 
@@ -14,7 +13,7 @@ Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pin
 
 //----------------------------------------------------------------------------------
 void Golpecitos::inicialize(){
-    // Iniciamos el monitor serie para mostrar el resultado
+  // Iniciamos el monitor serie para mostrar el resultado
   Serial.begin(9600);
   // Ponemos el pin Trig en modo salida
   pinMode(mPinTrig[0], OUTPUT);
@@ -43,27 +42,25 @@ void Golpecitos::inicialize(){
 
 //----------------------------------------------------------------------------------
 void Golpecitos::write_pwm(int _enable,int _pwm, int _dir1, int _dir2){ //function to write _pwm 2 motors & manage directions
-    if(_pwm > 0){
+  if(_pwm > 0){
+    // saturate signal
+    if (_pwm>255) _pwm=255; 
 
-      if (_pwm>255) _pwm=255;
+    digitalWrite(_dir1, HIGH);
+    digitalWrite(_dir2, LOW);
+    analogWrite(_enable, _pwm);
+  }else if(_pwm < 0){
+    // saturate signal
+    if (_pwm<-255) _pwm=-255;
       
-      digitalWrite(_dir1, HIGH);
-      digitalWrite(_dir2, LOW);
-      analogWrite(_enable, _pwm);
+    digitalWrite(_dir1, LOW);
+    digitalWrite(_dir2, HIGH);
+    analogWrite(_enable, abs(_pwm));
+  }else{
+    digitalWrite(_enable, LOW);
+  }
 
-    }	else if(_pwm < 0){
-
-      if (_pwm<-255) _pwm=-255;
-      
-      digitalWrite(_dir1, LOW);
-      digitalWrite(_dir2, HIGH);
-      analogWrite(_enable, abs(_pwm));
-
-    }else{
-        digitalWrite(_enable, LOW);
-    }
-
-    return;
+  return;
 }
 
 
@@ -110,6 +107,8 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
   
   // Comenzamos poniendo el pin Trigger en estado bajo
   digitalWrite(_pinTrig, LOW);
+  
+  return;
 }
 
 //----------------------------------------------------------------------------------
@@ -181,6 +180,7 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D and Ref f
   if (param == 'D') mPid->mKd = number.toFloat();
   if (param == 'R') mPid->reference(number.toFloat());
   }
+  return;
 }
 
 //----------------------------------------------------------------------------------
@@ -203,6 +203,7 @@ void Golpecitos::changeYawPID(){  // Checks for a change request of P,I,D and Re
   if (param == 'D') mPidAng->mKd = number.toFloat();
   if (param == 'R') mPidAng->reference(number.toFloat());
   }
+  return;
 }
 
 //----------------------------------------------------------------------------------
@@ -222,6 +223,8 @@ void Golpecitos::stepControl(){
   move(outPID,outAngPID);
 
   mLastTime = millis();
+
+  return;
 }
 
 //----------------------------------------------------------------------------------
@@ -245,6 +248,8 @@ void Golpecitos::stepControlParallel(){
   // }
   
   mLastTime = millis();
+
+  return;
 }
 
 //----------------------------------------------------------------------------------
