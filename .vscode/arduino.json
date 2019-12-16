@@ -1,5 +1,6 @@
 {
     "board": "arduino:avr:mega",
     "configuration": "cpu=atmega2560",
-    "sketch": "Arduino\\Golpecitos\\Golpecitos.ino"
+    "sketch": "Arduino\\Golpecitos\\Golpecitos.ino",
+    "port": "COM3"
 }
