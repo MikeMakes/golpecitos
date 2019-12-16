@@ -83,6 +83,10 @@ void Golpecitos::move(float _lin, float _ang){ //input _vel[0]=velocidad_rueda_i
   return;
 }
 
+void Golpecitos::Stop(){
+  move(0,0);
+}
+
 //----------------------------------------------------------------------------------
 float Golpecitos::readSonar(int _sonarNum){  
   iniciarTrigger(mPinTrig[_sonarNum]);
@@ -114,7 +118,9 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
 //----------------------------------------------------------------------------------
 char Golpecitos::readBluetooth(){
   if (Serial1.available()>0){
+    do {
     mBluetoothData = Serial1.read();
+    } while (mBluetoothData == '*');
     // Serial.write(mBluetoothData);
     }
 
@@ -130,27 +136,32 @@ void Golpecitos::step(){
   // APARTADO 1
   switch (value){
     case '1': // Avanza linea recta
-      move(mVelCrucero , 0.0);
+      move(mVelMax , 0.0);
       break;
 
     case '2': // rotar sentido horario
-      move(0.0 , mVelCrucero );
+      move(0.0 , -mVelCrucero );
       break;
 
     case '3':  // retrocede
-      move(-mVelCrucero , 0.0);
+      move(-mVelMax , 0.0);
       break;
 
     case '4':  // rotar sentido antihorario
-      move(mVelCrucero , 0.0);
+      move(0.0, mVelCrucero);
       break;
 
-    case '5': // girar izquierda
+    case '8': // girar izquierda
       move(mVelMax - 200.0 , mVelCrucero);
       break;
 
-    case '6':  // girar derecha
+    case '5':  // girar derecha
       move(mVelCrucero , mVelMax - 200.0);
+      break;
+
+    case 'M':
+      value = readBluetooth(); //pasamos a int
+      mRobotMode =  value - '0';
       break;
 
     default:
@@ -158,6 +169,17 @@ void Golpecitos::step(){
       break;
   }
   return;
+}
+
+void Golpecitos::changeState(){
+  char charReceived;
+  charReceived = readBluetooth();
+
+  if(charReceived == 'M'){
+    charReceived = readBluetooth(); //pasamos a int
+    mRobotMode =  charReceived - '0';
+  }
+    
 }
 
 //----------------------------------------------------------------------------------
@@ -214,13 +236,15 @@ void Golpecitos::stepControl(){
 
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
+
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
   float outPID    = mPid->update( distanciaMedia , mIncT);
 
-  mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
-  float outAngPID = mPidAng->update( mYaw , mIncT);
-
-  move(outPID,outAngPID);
+  if (mRobotMode == 3) {  //Si orientacion
+    mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
+    float outAngPID = mPidAng->update( mYaw , mIncT);
+    move(outPID,outAngPID);
+  } else move(outPID,0);  //si no orientacion
 
   mLastTime = millis();
 

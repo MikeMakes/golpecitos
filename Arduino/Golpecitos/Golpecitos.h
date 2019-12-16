@@ -15,18 +15,21 @@ class Golpecitos{
     void step();
     void stepControl();
     void stepControlParallel();
+
     void writeTelemetry();
 
+    void changeState();
     void changePID();
     void changeYawPID();
+    void Stop();
 
   private:
     void cinematica(float lin, float ang) ;
     void move(float _lin, float _ang);
     void write_pwm(int _enable,int _pwm, int _dir1, int _dir2);
 
-    float readSonar(int _sonarNum);
     char readBluetooth();
+    float readSonar(int _sonarNum);
     float orienta();
 
     // Método que inicia la secuencia del Trigger para comenzar a medir

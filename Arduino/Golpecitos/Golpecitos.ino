@@ -11,10 +11,44 @@ void setup() {
 }
 
 void loop() {
+  //golpes.readBluetooth();
+  switch (golpes.mRobotMode){
+    case 0:
+      golpes.Stop();
+      break;
+    
+    case 5:
+      golpes.step();
+      break;
+    
+    case 1://distancia frontal
+      golpes.changePID();
+      golpes.changeYawPID();
+      golpes.stepControl();
+      break;
 
-  golpes.changeYawPID(); //Checks for a change in pid  from phone
-  golpes.stepControl(); //Apply control
-  golpes.writeTelemetry();  //Log out telemetry by bluetooth : incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+    case 2: //angulo frontal
+      golpes.changePID();
+      golpes.changeYawPID();
+      golpes.stepControl();
+      break;
 
+    case 3: //angulo paralelo
+      golpes.changePID();
+      golpes.changeYawPID();
+      golpes.stepControlParallel();
+      break;
+
+    case 4://distancia paralelo
+      golpes.changePID();
+      golpes.changeYawPID();
+      golpes.stepControlParallel();
+      break;
+
+    default:
+      break;
+  }
+  golpes.writeTelemetry();
+  golpes.changeState();
   delay(100);
 }
