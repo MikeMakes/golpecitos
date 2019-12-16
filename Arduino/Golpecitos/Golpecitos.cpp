@@ -152,11 +152,11 @@ void Golpecitos::step(){
       break;
 
     case '8': // girar izquierda
-      move(mVelMax - 200.0 , mVelCrucero);
+      move(mVelMax, mVelMax);
       break;
 
     case '5':  // girar derecha
-      move(mVelCrucero , mVelMax - 200.0);
+      move(mVelMax , -mVelMax);
       break;
 
     case 'M':
