@@ -34,9 +34,10 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid =    new PID(-75.0, 0.5 , 0.0 , -803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
+  mPid =    new PID(-1.0  , 0.01 , 0.0 , -20.0,20.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
   mPidAng = new PID(60.0 , 0.1 , 0.0 , -803.0,803.0 , 50, -50);//SATURAR EL PWM ANGULAR PARA QUE NO SE VUELVA LOCO
-  mPid->reference(30.0);
+  
+  mPid->reference(50.0);
   mPidAng->reference(0.0);
 
   return;
@@ -173,6 +174,7 @@ void Golpecitos::step(){
   return;
 }
 
+//----------------------------------------------------------------------------------
 void Golpecitos::changeState(){
   char charReceived;
   charReceived = readBluetooth();
@@ -249,11 +251,12 @@ void Golpecitos::stepControl(){
     mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
     float outAngPID = mPidAng->update( mYaw , mIncT);
     move(outPID,outAngPID);
-  } else move(outPID,0);  //si no orientacion
+  } else move(outPID,0.0);  //si no orientacion
 
   mLastTime = millis();
 }
 
+//----------------------------------------------------------------------------------
 void Golpecitos::stepControlParallel(){
    // Feed PIDs
   float currentTime = millis();
@@ -267,21 +270,16 @@ void Golpecitos::stepControlParallel(){
   mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
   float outAngPID = mPidAng->update( mYaw , mIncT);
 
-  if(mRobotMode == 4){//Establecer margen
-    move(mVelCrucero,outPID);
+  if(mRobotMode == 4){
+    if((distanciaMedia > mPid->reference() * 1.1) || (distanciaMedia < mPid->reference() * 0.9)){ // out of ref
+      move(mVelMax,outPID);
+    }else{
+      move(mVelMax,outAngPID);
+    }
   }
   else if (mRobotMode == 3){
     move(mVelMax,outAngPID);
   }
-
-  // if(distanciaMedia!=referencia)//Establecer margen
-  // {
-  //   move(mVelCrucero,outPID);
-  // }
-  // else
-  // {
-  //   move(mVelCrucero,outAngPID);
-  // }
 
   mLastTime = millis();
 }

@@ -41,7 +41,7 @@ void loop() {
 
     case 4://distancia paralelo
       golpes.changePID();
-      golpes.changeYawPID();
+      // golpes.changeYawPID();
       golpes.stepControlParallel();
       break;
 
