@@ -37,7 +37,7 @@ void Golpecitos::inicialize(){
   mPid =    new PID(-1.0  , 0.01 , 0.0 , -20.0,20.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
   mPidAng = new PID(60.0 , 0.1 , 0.0 , -803.0,803.0 , 50, -50);//SATURAR EL PWM ANGULAR PARA QUE NO SE VUELVA LOCO
   
-  mPid->reference(50.0);
+  mPid->reference(30.0);
   mPidAng->reference(0.0);
 
   return;
@@ -200,8 +200,10 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
     while(charReceived!='*') {
       number += charReceived;
       charReceived=readBluetooth();
+      
+      if (number.toFloat() == 50.00 ||number.toFloat() == 40.00 ||number.toFloat() == 30.00)
+        break;
     }
-
   if (parametro == 'P') mPid->mKp = number.toFloat();
   if (parametro == 'I') mPid->mKi = number.toFloat();
   if (parametro == 'D') mPid->mKd = number.toFloat();
