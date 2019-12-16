@@ -120,11 +120,7 @@ void Golpecitos::iniciarTrigger(int _pinTrig){
 //----------------------------------------------------------------------------------
 char Golpecitos::readBluetooth(){
   if (Serial1.available()>0){
-<<<<<<< HEAD
     do {
-=======
-    //leeemos la opcion
->>>>>>> 4b8216f8d1716957b821dcc056cbc77d0567e661
     mBluetoothData = Serial1.read();
     } while (mBluetoothData == '*');
     // Serial.write(mBluetoothData);
@@ -270,8 +266,14 @@ void Golpecitos::stepControlParallel(){
 
   mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
   float outAngPID = mPidAng->update( mYaw , mIncT);
-  
-  
+
+  if(mRobotMode == 4){//Establecer margen
+    move(mVelCrucero,outPID);
+  }
+  else if (mRobotMode == 3){
+    move(mVelMax,outAngPID);
+  }
+
   // if(distanciaMedia!=referencia)//Establecer margen
   // {
   //   move(mVelCrucero,outPID);
@@ -280,6 +282,7 @@ void Golpecitos::stepControlParallel(){
   // {
   //   move(mVelCrucero,outAngPID);
   // }
+
   mLastTime = millis();
 }
 

@@ -34,7 +34,7 @@ void loop() {
       break;
 
     case 3: //angulo paralelo
-      golpes.changePID();
+      // golpes.changePID();
       golpes.changeYawPID();
       golpes.stepControlParallel();
       break;
