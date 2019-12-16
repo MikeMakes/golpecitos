@@ -34,8 +34,8 @@ void Golpecitos::inicialize(){
 
 
   // Configure controller pointer
-  mPid = new PID(-75.0, 0.5 , 0.0 ,-803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
-  mPidAng = new PID(60.0, 0.2 , 0.0 , -803.0,803.0 , 50, -50);//SATURAR EL PWM ANGULAR PARA QUE NO SE VUELVA LOCO
+  mPid =    new PID(-75.0, 0.5 , 0.0 , -803.0,803.0 , 50, -50); //P -100 funciona: P-75,I-0.5 funciona:
+  mPidAng = new PID(60.0 , 0.1 , 0.0 , -803.0,803.0 , 50, -50);//SATURAR EL PWM ANGULAR PARA QUE NO SE VUELVA LOCO
   mPid->reference(30.0);
   mPidAng->reference(0.0);
 
