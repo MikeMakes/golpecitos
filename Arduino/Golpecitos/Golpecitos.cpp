@@ -13,15 +13,6 @@ Golpecitos::Golpecitos(int _pinEchoIzq,int _pinTrigIzq,int _pinEchoDcha,int _pin
 
 }
 
-// ----------- Destructor de la clase -----------
-Golpecitos::~Golpecitos(){}
-
-//  ----------- Metodos(funciones) publicos -----------
-void Golpecitos::saluda(){
-	Serial.println("hola jeje");
-	return ;
-}
-
 //----------------------------------------------------------------------------------
 void Golpecitos::inicialize(){
     // Iniciamos el monitor serie para mostrar el resultado
@@ -191,7 +182,7 @@ void Golpecitos::changePID(){  // Checks for a change request of P,I,D from blue
   if (parametro == 'P') mPid->mKp = number.toFloat();
   if (parametro == 'I') mPid->mKi = number.toFloat();
   if (parametro == 'D') mPid->mKd = number.toFloat();
-  if (parametro == 'R') mPid->mReference = number.toFloat();
+  if (parametro == 'R') mPid->reference(number.toFloat());
   
   }
 }
@@ -215,7 +206,7 @@ void Golpecitos::changeYawPID(){  // Checks for a change request of P,I,D from b
   if (parametro == 'P') mPidAng->mKp = number.toFloat();
   if (parametro == 'I') mPidAng->mKi = number.toFloat();
   if (parametro == 'D') mPidAng->mKd = number.toFloat();
-  if (parametro == 'R') mPidAng->mReference = number.toFloat();
+  if (parametro == 'R') mPidAng->reference(number.toFloat());
   
   }
 }
@@ -225,55 +216,55 @@ void Golpecitos::stepControl(){
 
   // Feed PIDs
   float currentTime = millis();
-  incT = double(currentTime - mLastTime);
+  mIncT = double(currentTime - mLastTime);
 
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
-  float outPID    = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
+  float outPID    = mPid->update( distanciaMedia , mIncT); // entrada -> medida ; salida -> (?)
 
   mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
-  float outAngPID = mPidAng->update( mYaw , incT);
+  float outAngPID = mPidAng->update( mYaw , mIncT);
 
   move(outPID,outAngPID);
 
   mLastTime = millis();
 }
 
-void Golpecitos::stepControlParalel(){
+void Golpecitos::stepControlParallel(){
    // Feed PIDs
   float currentTime = millis();
-  incT = double(currentTime - mLastTime);
+  mIncT = double(currentTime - mLastTime);
 
   readSonar(0); // 0 es izquierda y 1 es derecha
   readSonar(1);
   float distanciaMedia = ( mDistSonar[0]+mDistSonar[1] ) / 2.0;
-  float outPID    = mPid->update( distanciaMedia , incT); // entrada -> medida ; salida -> (?)
+  float outPID    = mPid->update( distanciaMedia , mIncT); // entrada -> medida ; salida -> (?)
 
   mYaw = atan( ( mDistSonar[0] - mDistSonar[1] )/mDistSensores ) ; // -> grados
-  float outAngPID = mPidAng->update( mYaw , incT);
+  float outAngPID = mPidAng->update( mYaw , mIncT);
   
   
-  if(distanciaMedia!=referencia)//Establecer margen
-  {
-    move(mVelCrucero,outPID);
-  }
-  else
-  {
-    move(mVelCrucero,outAngPID);
-  }
-    mLastTime = millis();
+  // if(distanciaMedia!=referencia)//Establecer margen
+  // {
+  //   move(mVelCrucero,outPID);
+  // }
+  // else
+  // {
+  //   move(mVelCrucero,outAngPID);
+  // }
+  //   mLastTime = millis();
 }
 
 void Golpecitos::writeTelemetry(){
   // Definir string para mandar Aqui
-  // log -> incT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
-  //String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
+  // log -> mIncT [ms] , distIzq [cm] , distDcha [cm] , ref [cm] , modo [int] , velPWMizq [int] , velPWMdcha [int]
+  //String log = String(mIncT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->mKp) + " " + String(mPid->mKi) + " " + String(mPid->mKd)
   //            + " " + String(mPid->reference()) + " " + String(mRobotMode) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
-  String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPidAng->mKp) + " " + String(mPidAng->mKi) + " " + String(mPidAng->mKd)
-              + " " + String(mPidAng->reference()) + " " + String(mYaw * (180/M_PI)) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+  //String log = String(mIncT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPidAng->mKp) + " " + String(mPidAng->mKi) + " " + String(mPidAng->mKd)
+   //           + " " + String(mPidAng->reference()) + " " + String(mYaw * (180/M_PI)) + " " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
 /*STRINGS PARA MANDAR
-  1-String(incT) 
+  1-String(mIncT) 
   2-String(mDistSonar[0])
   3-String(mDistSonar[1])
   4-String(mPid->reference())
@@ -284,7 +275,8 @@ void Golpecitos::writeTelemetry(){
   9-String(mSpeed[0])
   10-String(mSpeed[1])
 */
- //String log = String(incT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid(reference))+" "+String(distanciaMedia)+" " + String(mPidAng->reference()) + " " + String(mYaw * (180/M_PI)) +" "+String(mRobotMode)+" " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
+ String log = String(mIncT)+ " " +String(mDistSonar[0]) + " " + String(mDistSonar[1]) + " " + String(mPid->reference()) +" "+ String(( mDistSonar[0]+mDistSonar[1] ) / 2.0)+" " + 
+            String(mPidAng->reference()) + " " + String(mYaw * (180/M_PI)) +" "+String(mRobotMode)+" " + String(mSpeed[0]) + " " +  String(mSpeed[1]) + " \n";
   
 
   Serial1.println(log);
